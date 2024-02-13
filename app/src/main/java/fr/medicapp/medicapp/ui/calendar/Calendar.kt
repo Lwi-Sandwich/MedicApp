@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.kizitonwose.calendar.compose.WeekCalendar
 import fr.medicapp.medicapp.model.Notification
 import fr.medicapp.medicapp.ui.notifications.Notifications
 
