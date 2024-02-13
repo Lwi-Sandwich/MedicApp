@@ -2,6 +2,7 @@ package fr.medicapp.medicapp.ui.home
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Book
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Medication
 import androidx.compose.material.icons.filled.RingVolume
@@ -47,6 +48,17 @@ sealed class NavigationDrawerRoute(
         route = "home",
         title = "Accueil",
         icon = Icons.Filled.Home,
+        color = EUGreen60,
+        logo = R.drawable.medicapp_eu_green
+    )
+
+    /**
+     * Route de l'écran des prescriptions.
+     */
+    object Calendrier : NavigationDrawerRoute(
+        route = PrescriptionRoute.Main.route,
+        title = "Calendrier des prises",
+        icon = Icons.Filled.CalendarMonth,
         color = EUGreen60,
         logo = R.drawable.medicapp_eu_green
     )
