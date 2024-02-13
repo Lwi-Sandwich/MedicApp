@@ -56,6 +56,7 @@ import fr.medicapp.medicapp.ui.theme.EUBlue100
 import fr.medicapp.medicapp.ui.theme.EUGreen100
 import fr.medicapp.medicapp.ui.theme.EUGreen40
 import fr.medicapp.medicapp.ui.theme.EUOrange100
+import fr.medicapp.medicapp.ui.theme.EUOrange110
 import fr.medicapp.medicapp.ui.theme.EUPurple20
 import fr.medicapp.medicapp.ui.theme.EUPurple80
 import fr.medicapp.medicapp.ui.theme.EURed100
@@ -96,7 +97,7 @@ fun Prescription(
                         },
                         shape = RoundedCornerShape(20),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = EURed100,
+                            containerColor = EUOrange110,
                             contentColor = Color.White
                         ),
                         modifier = Modifier
@@ -104,7 +105,7 @@ fun Prescription(
                             .weight(3f)
                     ) {
                         Text(
-                            text = "Annuler",
+                            text = "Retour",
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold
                         )
