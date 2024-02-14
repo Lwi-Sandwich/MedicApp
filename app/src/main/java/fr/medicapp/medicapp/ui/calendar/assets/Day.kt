@@ -3,6 +3,7 @@ package fr.medicapp.medicapp.ui.calendar.assets
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,13 +17,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import fr.medicapp.medicapp.ui.calendar.Calendar
 import fr.medicapp.medicapp.ui.notifications.NotificationsEdit.getFrenchDayOfWeek
 import fr.medicapp.medicapp.ui.theme.EUGreen120
+import fr.medicapp.medicapp.ui.theme.EUGreen20
 import fr.medicapp.medicapp.ui.theme.EUGreen80
 import fr.medicapp.medicapp.ui.theme.EURed120
 import java.time.LocalDate
@@ -43,11 +47,12 @@ import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Day(day: LocalDate, isSelected: Boolean) {
+fun Day(day: LocalDate, isSelected: Boolean, onClick : (LocalDate) -> Unit) {
     Box(
         modifier = Modifier
             .aspectRatio(1f)
-            .wrapContentHeight(),
+            .wrapContentHeight()
+            .clickable { onClick(day) },
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -57,7 +62,7 @@ fun Day(day: LocalDate, isSelected: Boolean) {
         ) {
             // Jour de la semaine en français
             Text(
-                text = getFrenchDayOfWeek(day.dayOfWeek).take(2)
+                text = getFrenchDayOfWeek(day.dayOfWeek).take(3)
             ) // Transformation de la chaîne : MONDAY => LUNDI => LU
 
             // Numéro du jour
@@ -65,10 +70,19 @@ fun Day(day: LocalDate, isSelected: Boolean) {
                 text = day.dayOfMonth.toString(),
                 color = if (isSelected) EUGreen120 else Color.Unspecified,
                 fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                fontSize = 17.sp
             )
         }
-
+        if (isSelected) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(5.dp)
+                    .background(EUGreen80)
+                    .align(Alignment.BottomCenter),
+            )
+        }
     }
 }
 
@@ -76,5 +90,5 @@ fun Day(day: LocalDate, isSelected: Boolean) {
 @Preview(showBackground = false)
 @Composable
 private fun DayPreview() {
-    Day(LocalDate.now() ,isSelected = true)
+    Day(LocalDate.now() ,isSelected = true) {LocalDate.now()}
 }

@@ -34,7 +34,6 @@ import java.time.DayOfWeek
  *
  * @param navController Le contrôleur de navigation.
  */
-@RequiresApi(Build.VERSION_CODES.O)
 fun NavGraphBuilder.notificationNavGraph(
     navController: NavHostController
 ) {

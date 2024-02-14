@@ -60,6 +60,11 @@ object Graph {
     const val HOME = "home_graph"
 
     /**
+     * Route pour l'écran du calendrier.
+     */
+    const val CALENDAR = "calendar_graph"
+
+    /**
      * Route pour le graphe de navigation des prescriptions.
      */
     const val PRESCRIPTION = "prescription_graph"

@@ -32,7 +32,6 @@ import fr.medicapp.medicapp.ui.theme.EUGreen20
 import java.time.LocalDate
 import java.time.YearMonth
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Calendar(
@@ -84,7 +83,12 @@ fun Calendar(
                     }
                 ,
                 state = state,
-                dayContent = { day -> Day(day.date, isSelected = selection == day.date) }
+                dayContent = { day -> Day(day.date, isSelected = selection == day.date) { clicked ->
+                        if (selection != clicked) {
+                            selection = clicked
+                        }
+                    }
+                }
             ) {
 
             }
@@ -92,7 +96,6 @@ fun Calendar(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 private fun CalendarPreview() {
