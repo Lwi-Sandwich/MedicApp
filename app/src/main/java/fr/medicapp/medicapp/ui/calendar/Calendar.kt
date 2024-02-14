@@ -3,34 +3,48 @@ package fr.medicapp.medicapp.ui.calendar
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.kizitonwose.calendar.compose.WeekCalendar
 import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
 import com.kizitonwose.calendar.core.atStartOfMonth
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import fr.medicapp.medicapp.ui.calendar.assets.Day
+import fr.medicapp.medicapp.ui.theme.EUGreen120
 import fr.medicapp.medicapp.ui.theme.EUGreen20
+import fr.medicapp.medicapp.ui.theme.EUGreen80
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,10 +75,12 @@ fun Calendar(
         ) {
             val currentDate = remember { LocalDate.now() }
             val currentMonth = remember { YearMonth.now() }
-            val startDate = remember { currentMonth.minusMonths(100).atStartOfMonth() } // Adjust as needed
-            val endDate = remember { currentMonth.plusMonths(100).atEndOfMonth() } // Adjust as needed
+            val startDate = remember { currentMonth.minusMonths(100).atStartOfMonth() }
+            val endDate = remember { currentMonth.plusMonths(100).atEndOfMonth() }
             val firstDayOfWeek = remember { firstDayOfWeekFromLocale() } // Available from the library
             var selection by remember { mutableStateOf(currentDate) }
+            var monthSelection by remember { mutableStateOf(currentDate.month) }
+            var yearSelection by remember { mutableIntStateOf(currentDate.year) }
 
             val state = rememberWeekCalendarState(
                 startDate = startDate,
@@ -72,6 +88,31 @@ fun Calendar(
                 firstVisibleWeekDate = currentDate,
                 firstDayOfWeek = firstDayOfWeek
             )
+
+            monthSelection = state.firstVisibleWeek.days.first().date.month
+            yearSelection = state.firstVisibleWeek.days.first().date.year
+
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    "${monthSelection.getDisplayName(TextStyle.FULL, Locale.FRANCE)
+                        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }} $yearSelection",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 22.sp,
+                    color = EUGreen120
+                )
+            }
+
+            Spacer(modifier = Modifier.height(15.dp))
+
+            /*Text(
+                currentMonth.format(DateTimeFormatter.ofPattern("MMMM yyyy")),
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp,
+                textAlign = TextAlign.Center
+            )*/
 
             WeekCalendar(
                 modifier = Modifier
