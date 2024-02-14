@@ -23,7 +23,7 @@ android {
 
     defaultConfig {
         applicationId = "fr.medicapp.medicapp"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
@@ -75,6 +75,10 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.navigation:navigation-compose:2.7.6")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+
+    // Calendar
+    implementation("com.android.tools:desugar_jdk_libs:2.0.4")
+    implementation("com.kizitonwose.calendar:compose:2.5.0")
 
     // Material Design icons
     implementation("androidx.compose.material:material-icons-extended")

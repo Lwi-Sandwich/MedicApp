@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.RingVolume
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import fr.medicapp.medicapp.R
+import fr.medicapp.medicapp.ui.navigation.CalendarRoute
 import fr.medicapp.medicapp.ui.navigation.NotificationRoute
 import fr.medicapp.medicapp.ui.navigation.PrescriptionRoute
 import fr.medicapp.medicapp.ui.navigation.SideEffectRoute
@@ -53,10 +54,10 @@ sealed class NavigationDrawerRoute(
     )
 
     /**
-     * Route de l'écran des prescriptions.
+     * Route de l'écran du calendrier.
      */
     object Calendrier : NavigationDrawerRoute(
-        route = PrescriptionRoute.Main.route,
+        route = CalendarRoute.Main.route,
         title = "Calendrier des prises",
         icon = Icons.Filled.CalendarMonth,
         color = EUGreen60,
