@@ -269,16 +269,37 @@ private fun EditPrescriptionPreview() {
         prescription = Prescription(),
         doctors = listOf(
             Doctor(
+                id = 1,
                 firstName = "Jean",
-                lastName = "Dupont"
+                lastName = "Dupont",
+                phoneNumber = null,
+                email = null,
+                specialty = null,
+                zipCode = null,
+                city = null,
+                address = null,
             ),
             Doctor(
+                id = 2,
                 firstName = "John",
-                lastName = "Dupont"
+                lastName = "Dupont",
+                phoneNumber = null,
+                email = null,
+                specialty = null,
+                zipCode = null,
+                city = null,
+                address = null,
             ),
             Doctor(
+                id=3,
                 firstName = "Mark",
-                lastName = "Dupont"
+                lastName = "Dupont",
+                phoneNumber = null,
+                email = null,
+                specialty = null,
+                zipCode = null,
+                city = null,
+                address = null,
             ),
         ),
         onCancel = {},

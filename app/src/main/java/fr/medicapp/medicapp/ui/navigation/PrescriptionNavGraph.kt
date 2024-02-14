@@ -370,12 +370,26 @@ fun NavGraphBuilder.prescriptionNavGraph(
                     prescription = state,
                     doctors = listOf(
                         Doctor(
+                            id = 1,
                             lastName = "Doe",
                             firstName = "John",
+                            phoneNumber = null,
+                            email = null,
+                            specialty = null,
+                            zipCode = null,
+                            city = null,
+                            address = null,
                         ),
                         Doctor(
+                            id = 2,
                             lastName = "Doe",
                             firstName = "Jane",
+                            phoneNumber = null,
+                            email = null,
+                            specialty = null,
+                            zipCode = null,
+                            city = null,
+                            address = null,
                         ),
                     ),
                     onCancel = {

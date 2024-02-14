@@ -30,7 +30,7 @@ interface DoctorDAO {
      * @return L'entité du médecin correspondant à l'identifiant donné.
      */
     @Query("SELECT * FROM DoctorEntity WHERE id = :id")
-    fun getOne(id: String): DoctorEntity
+    fun getOne(id: Int): DoctorEntity
 
     /**
      * Ajoute un nouveau médecin à la base de données.

@@ -14,7 +14,7 @@ data class Doctor(
     /**
      * L'identifiant unique du docteur.
      */
-    val id: String? = null,
+    val id: Int,
 
     /**
      * Le nom de famille du docteur.
@@ -24,7 +24,37 @@ data class Doctor(
     /**
      * Le prénom du docteur.
      */
-    var firstName: String,
+    val firstName: String,
+
+    /**
+     * Le numéro de téléphone du docteur.
+     */
+    val phoneNumber: String?,
+
+    /**
+     * L'adresse email du docteur.
+     */
+    val email: String?,
+
+    /**
+     * La spécialité du docteur.
+     */
+    val specialty: String?,
+
+    /**
+     * Le code postal du docteur.
+     */
+    val zipCode: Int?,
+
+    /**
+     * La ville du docteur.
+     */
+    val city: String?,
+
+    /**
+     * L'adresse du docteur.
+     */
+    val address: String?
 ) {
 
     /**

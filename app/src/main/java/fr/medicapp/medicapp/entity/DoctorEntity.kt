@@ -17,7 +17,7 @@ data class DoctorEntity(
      * L'identifiant unique du médecin.
      */
     @PrimaryKey
-    val id: String,
+    val id: Int,
 
     /**
      * Le nom de famille du médecin.
@@ -27,5 +27,35 @@ data class DoctorEntity(
     /**
      * Le prénom du médecin.
      */
-    var firstName: String,
+    val firstName: String,
+
+    /**
+     * Le numéro de téléphone du médecin.
+     */
+    val phoneNumber: String?,
+
+    /**
+     * L'adresse email du médecin.
+     */
+    val email: String?,
+
+    /**
+     * La spécialité du médecin.
+     */
+    val specialty: String?,
+
+    /**
+     * Le code postal du médecin.
+     */
+    val zipCode: Int?,
+
+    /**
+     * La ville du médecin.
+     */
+    val city: String?,
+
+    /**
+     * L'adresse du médecin.
+     */
+    val address: String?
 )

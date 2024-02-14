@@ -31,7 +31,7 @@ class DoctorRepository(
      * @param id L'identifiant unique du docteur à récupérer.
      * @return L'entité Doctor correspondant à l'identifiant donné.
      */
-    fun getOne(id: String): DoctorEntity {
+    fun getOne(id: Int): DoctorEntity {
         return doctorDao.getOne(id)
     }
 
