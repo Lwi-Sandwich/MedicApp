@@ -5,13 +5,22 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Medication
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -37,9 +46,11 @@ import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
 import com.kizitonwose.calendar.core.atStartOfMonth
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import fr.medicapp.medicapp.ui.calendar.assets.Day
+import fr.medicapp.medicapp.ui.theme.EUGreen100
 import fr.medicapp.medicapp.ui.theme.EUGreen120
 import fr.medicapp.medicapp.ui.theme.EUGreen20
 import fr.medicapp.medicapp.ui.theme.EUGreen80
+import fr.medicapp.medicapp.ui.theme.EUYellow110
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
@@ -131,6 +142,45 @@ fun Calendar(
                     }
                 }
             ) {
+
+            }
+
+            Spacer(modifier = Modifier.height(15.dp))
+
+            ElevatedCard(
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 6.dp
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
+                colors =
+                CardDefaults.cardColors(
+                    containerColor = EUGreen100,
+                    contentColor = Color.White
+                ),
+                shape = RoundedCornerShape(10.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(5.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Medication,
+                            contentDescription = "",
+                            tint = Color.White
+                        )
+                        Text("Médicament exemple",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 15.sp
+                        )
+                    }
+                    Text("10h00",
+                        fontSize = 15.sp
+                    )
+                }
 
             }
         }
