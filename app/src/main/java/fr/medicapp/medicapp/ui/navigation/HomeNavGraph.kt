@@ -51,6 +51,11 @@ fun HomeNavGraph(navController: NavHostController) {
         prescriptionNavGraph(navController)
 
         /**
+         * Appelle la fonction calendarNavGraph pour construire le graphe de navigation du calendrier.
+         */
+        calendarNavGraph(navController)
+
+        /**
          * Appelle la fonction sideEffectNavGraph pour construire le graphe de navigation des effets indésirables.
          */
         sideEffectNavGraph(navController)
