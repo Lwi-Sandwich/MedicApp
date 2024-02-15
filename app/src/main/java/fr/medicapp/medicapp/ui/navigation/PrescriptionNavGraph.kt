@@ -370,12 +370,12 @@ fun NavGraphBuilder.prescriptionNavGraph(
                     prescription = state,
                     doctors = listOf(
                         Doctor(
-                            id = 1,
+                            id = "1",
                             lastName = "Doe",
                             firstName = "John",
                         ),
                         Doctor(
-                            id = 2,
+                            id = "2",
                             lastName = "Doe",
                             firstName = "Jane",
                         ),

@@ -17,7 +17,7 @@ data class DoctorEntity(
      * L'identifiant unique du médecin.
      */
     @PrimaryKey
-    val id: Int,
+    val id: String,
 
     /**
      * Le nom de famille du médecin.

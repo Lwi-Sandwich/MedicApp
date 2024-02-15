@@ -14,7 +14,7 @@ data class Doctor(
     /**
      * L'identifiant unique du docteur.
      */
-    val id: Int,
+    val id: String,
 
     /**
      * Le nom de famille du docteur.

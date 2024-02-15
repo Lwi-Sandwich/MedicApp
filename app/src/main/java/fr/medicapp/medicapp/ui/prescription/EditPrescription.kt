@@ -269,17 +269,17 @@ private fun EditPrescriptionPreview() {
         prescription = Prescription(),
         doctors = listOf(
             Doctor(
-                id = 1,
+                id = "1",
                 firstName = "Jean",
                 lastName = "Dupont",
             ),
             Doctor(
-                id = 2,
+                id = "2",
                 firstName = "John",
                 lastName = "Dupont",
             ),
             Doctor(
-                id=3,
+                id = "3",
                 firstName = "Mark",
                 lastName = "Dupont",
             ),
