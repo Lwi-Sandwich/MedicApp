@@ -8,7 +8,7 @@ import fr.medicapp.medicapp.ui.calendar.Calendar
 
 fun NavGraphBuilder.calendarNavGraph(navController: NavHostController) {
     /**
-     * Définit la navigation pour le graphe de notification.
+     * Définit la navigation pour le graphe du calendrier.
      */
     navigation(
         route = Graph.CALENDAR,
@@ -27,7 +27,7 @@ fun NavGraphBuilder.calendarNavGraph(navController: NavHostController) {
  */
 sealed class CalendarRoute(val route: String) {
     /**
-     * Représente la route principale des effets secondaires.
+     * Représente la route principale du calendrier.
      */
     object Main : CalendarRoute(route = "calendar_main")
 }

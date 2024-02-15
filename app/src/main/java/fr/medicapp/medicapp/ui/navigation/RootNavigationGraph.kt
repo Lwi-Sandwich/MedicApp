@@ -70,6 +70,11 @@ object Graph {
     const val PRESCRIPTION = "prescription_graph"
 
     /**
+     * Route pour l'écran des doctors.
+     */
+    const val DOCTORS = "doctors_graph"
+
+    /**
      * Route pour le graphe de navigation des effets indésirables.
      */
     const val SIDE_EFFECTS = "add_side_effects_graph"
