@@ -70,6 +70,8 @@ import fr.medicapp.medicapp.ui.prescription.SearchDialog
 import fr.medicapp.medicapp.ui.theme.EUBlack100
 import fr.medicapp.medicapp.ui.theme.EUBlue100
 import fr.medicapp.medicapp.ui.theme.EUGreen100
+import fr.medicapp.medicapp.ui.theme.EUGrey10
+import fr.medicapp.medicapp.ui.theme.EUGrey100
 import fr.medicapp.medicapp.ui.theme.EUOrange100
 import fr.medicapp.medicapp.ui.theme.EUPurple100
 import fr.medicapp.medicapp.ui.theme.EUPurple20
@@ -278,7 +280,7 @@ fun TreatmentCard(
                             modifier = Modifier
                                 .background(color = EUGreen100)
                                 .clip(RoundedCornerShape(100.dp)),
-                            imageVector = Icons.Filled.HourglassTop,
+                            imageVector = Icons.Filled.Medication,
                             contentDescription = "",
                             tint = Color.White
                         )
@@ -301,10 +303,13 @@ fun TreatmentCard(
                     }
 
                     Column() {
-                        Row() {
                             // Options pour les dropdowns
-                            val numbers = listOf(1,2,3,4,5,6,7,8,9,10)
-                            val units = listOf("fois", "comprimé", "gélule") // Ajouter d'autres options au besoin
+                            val numbers = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+                            val units = listOf(
+                                "fois",
+                                "comprimé",
+                                "gélule"
+                            ) // Ajouter d'autres options au besoin
                             val periodicities = listOf("jour", "semaine", "mois")
 
                             var isDropDownMenuNumbersOpen by remember { mutableStateOf(false) }
@@ -335,116 +340,199 @@ fun TreatmentCard(
                                 ),
                                 modifier = Modifier.weight(1f)
                             )*/
-
-                            ExposedDropdownMenuBox(
-                                expanded = isDropDownMenuNumbersOpen,
-                                onExpandedChange = { isDropDownMenuNumbersOpen = !isDropDownMenuNumbersOpen},
-                                modifier = Modifier.weight(1f)) {
-                                TextField(
-                                    modifier = Modifier.menuAnchor(),
-                                    value = selectedNumber.toString(),
-                                    onValueChange = {},
-                                    readOnly = true,
-                                    textStyle = TextStyle(fontSize = 14.sp, color = Color.Black),
-                                    maxLines = 1,
-                                    trailingIcon = {ExposedDropdownMenuDefaults.TrailingIcon(
-                                        expanded = isDropDownMenuNumbersOpen
-                                    )}
+                            Row {
+                                ExposedDropdownMenuBox(
+                                    expanded = isDropDownMenuNumbersOpen,
+                                    onExpandedChange = {
+                                        isDropDownMenuNumbersOpen = !isDropDownMenuNumbersOpen
+                                    },
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    TextField(
+                                        modifier = Modifier.menuAnchor(),
+                                        value = selectedNumber.toString(),
+                                        onValueChange = {},
+                                        readOnly = true,
+                                        textStyle = TextStyle(
+                                            fontSize = 14.sp,
+                                            color = Color.Black
+                                        ),
+                                        maxLines = 1,
+                                        trailingIcon = {
+                                            ExposedDropdownMenuDefaults.TrailingIcon(
+                                                expanded = isDropDownMenuNumbersOpen
+                                            )
+                                        },
+                                        colors = OutlinedTextFieldDefaults.colors(
+                                            focusedBorderColor = EUPurple100,
+                                            unfocusedBorderColor = EUPurple100,
+                                            disabledBorderColor = EUPurple100,
+                                            errorBorderColor = EURed60,
+                                            focusedLabelColor = EUPurple100,
+                                            unfocusedLabelColor = EUPurple100,
+                                            disabledLabelColor = EUPurple100,
+                                            errorLabelColor = EURed60,
+                                        ),
                                     )
 
-                                ExposedDropdownMenu(expanded = isDropDownMenuNumbersOpen, onDismissRequest = { isDropDownMenuNumbersOpen = false }) {
-                                    numbers.forEach{ number ->
-                                        DropdownMenuItem(
-                                            text = { Text(text = number.toString()) },
-                                            onClick = {
-                                                selectedNumber = number
-                                                isDropDownMenuNumbersOpen = false
-                                            },
-                                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                                        )
-                                    }
-                                }
-                            }
-                            ExposedDropdownMenuBox(expanded = isDropDownMenuUnitsOpen,
-                                onExpandedChange = { isDropDownMenuUnitsOpen = !isDropDownMenuUnitsOpen},
-                                modifier = Modifier.weight(1f)) {
-                                TextField(
-                                    modifier = Modifier.menuAnchor(),
-                                    value = selectedUnits,
-                                    onValueChange = {},
-                                    readOnly = true,
-                                    textStyle = TextStyle(fontSize = 14.sp, color = Color.Black),
-                                    maxLines = 1,
-                                    trailingIcon = {ExposedDropdownMenuDefaults.TrailingIcon(
-                                        expanded = isDropDownMenuUnitsOpen,
-                                    )}
-                                )
-
-                                ExposedDropdownMenu(expanded = isDropDownMenuUnitsOpen, onDismissRequest = { isDropDownMenuUnitsOpen = false }) {
-                                    units.forEach{ unit ->
-                                        DropdownMenuItem(
-                                            text = { Text(text = unit) },
-                                            onClick = {
-                                                selectedUnits = unit
-                                                isDropDownMenuUnitsOpen = false
-                                            },
-                                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                                        )
-                                    }
-                                }
-                            }
-                            Text(
-                                text = "par",
-                                style = TextStyle(fontSize = 16.sp, color = Color.Black),
-                                modifier = Modifier
-                                    .weight(0.5f)
-                                    .align(Alignment.CenterVertically),
-                                textAlign = TextAlign.Center
-                            )
-
-                            ExposedDropdownMenuBox(expanded = isDropDownMenuPeriodicitiesOpen,
-                                onExpandedChange = { isDropDownMenuPeriodicitiesOpen = !isDropDownMenuPeriodicitiesOpen},
-                                modifier = Modifier.weight(1f)) {
-                                TextField(
-                                    modifier = Modifier.menuAnchor(),
-                                    value = selectedPeriodicities.toString(),
-                                    onValueChange = {},
-                                    readOnly = true,
-                                    textStyle = TextStyle(fontSize = 14.sp, color = Color.Black),
-                                    maxLines = 1,
-                                    /*trailingIcon = {ExposedDropdownMenuDefaults.TrailingIcon(
-                                        expanded = isDropDownMenuPeriodicitiesOpen
-                                    )}*/
-                                    trailingIcon = {
-                                        IconButton(
-                                            onClick = { isDropDownMenuPeriodicitiesOpen = !isDropDownMenuPeriodicitiesOpen },
-                                            modifier = Modifier.align(Alignment.CenterVertically),
-                                        ) {
-                                            Icon(
-                                                imageVector = Icons.Default.ArrowDropDown,
-                                                contentDescription = "Menu déroulant",
-                                                tint = Color.Black, // Couleur de l'icône
-                                                modifier = Modifier.size(24.dp) // Taille personnalisée de l'icône
+                                    ExposedDropdownMenu(
+                                        expanded = isDropDownMenuNumbersOpen,
+                                        onDismissRequest = { isDropDownMenuNumbersOpen = false }) {
+                                        numbers.forEach { number ->
+                                            DropdownMenuItem(
+                                                text = { Text(text = number.toString()) },
+                                                onClick = {
+                                                    selectedNumber = number
+                                                    isDropDownMenuNumbersOpen = false
+                                                },
+                                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                                             )
                                         }
                                     }
-                                )
+                                }
+                                ExposedDropdownMenuBox(
+                                    expanded = isDropDownMenuUnitsOpen,
+                                    onExpandedChange = {
+                                        isDropDownMenuUnitsOpen = !isDropDownMenuUnitsOpen
+                                    },
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    TextField(
+                                        modifier = Modifier.menuAnchor(),
+                                        value = selectedUnits,
+                                        onValueChange = {},
+                                        readOnly = true,
+                                        textStyle = TextStyle(
+                                            fontSize = 14.sp,
+                                            color = Color.Black
+                                        ),
+                                        maxLines = 1,
+                                        trailingIcon = {
+                                            ExposedDropdownMenuDefaults.TrailingIcon(
+                                                expanded = isDropDownMenuUnitsOpen,
+                                            )
+                                        },
+                                        colors = OutlinedTextFieldDefaults.colors(
+                                            focusedBorderColor = EUPurple100,
+                                            unfocusedBorderColor = EUPurple100,
+                                            disabledBorderColor = EUPurple100,
+                                            errorBorderColor = EURed60,
+                                            focusedLabelColor = EUPurple100,
+                                            unfocusedLabelColor = EUPurple100,
+                                            disabledLabelColor = EUPurple100,
+                                            errorLabelColor = EURed60,
+                                        ),
+                                    )
 
-                                ExposedDropdownMenu(expanded = isDropDownMenuPeriodicitiesOpen, onDismissRequest = { isDropDownMenuPeriodicitiesOpen = false }) {
-                                    periodicities.forEach { periodiciti ->
-                                        DropdownMenuItem(
-                                            text = { Text(text = periodiciti.toString()) },
-                                            onClick = {
-                                                selectedPeriodicities = periodiciti
-                                                isDropDownMenuPeriodicitiesOpen = false
-                                            },
-                                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                                        )
+                                    ExposedDropdownMenu(
+                                        expanded = isDropDownMenuUnitsOpen,
+                                        onDismissRequest = { isDropDownMenuUnitsOpen = false }) {
+                                        units.forEach { unit ->
+                                            DropdownMenuItem(
+                                                text = { Text(text = unit) },
+                                                onClick = {
+                                                    selectedUnits = unit
+                                                    isDropDownMenuUnitsOpen = false
+                                                },
+                                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                                            )
+                                        }
                                     }
                                 }
                             }
-                        }
+                            Row() {
+                                Text(
+                                    text = "par",
+                                    style = TextStyle(fontSize = 16.sp, color = Color.Black),
+                                    modifier = Modifier
+                                        .weight(0.7f)
+                                        .align(Alignment.CenterVertically),
+                                    textAlign = TextAlign.Center
+                                )
 
+                                ExposedDropdownMenuBox(
+                                    expanded = isDropDownMenuPeriodicitiesOpen,
+                                    onExpandedChange = {
+                                        isDropDownMenuPeriodicitiesOpen =
+                                            !isDropDownMenuPeriodicitiesOpen
+                                    },
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    TextField(
+                                        modifier = Modifier.menuAnchor(),
+                                        value = selectedPeriodicities.toString(),
+                                        onValueChange = {},
+                                        readOnly = true,
+                                        textStyle = TextStyle(
+                                            fontSize = 14.sp,
+                                            color = Color.Black
+                                        ),
+                                        maxLines = 1,
+                                        trailingIcon = {
+                                            ExposedDropdownMenuDefaults.TrailingIcon(
+                                                expanded = isDropDownMenuPeriodicitiesOpen
+                                            )
+                                        },
+                                        colors = OutlinedTextFieldDefaults.colors(
+                                            focusedBorderColor = EUPurple100,
+                                            unfocusedBorderColor = EUPurple100,
+                                            disabledBorderColor = EUPurple100,
+                                            errorBorderColor = EURed60,
+                                            focusedLabelColor = EUPurple100,
+                                            unfocusedLabelColor = EUPurple100,
+                                            disabledLabelColor = EUPurple100,
+                                            errorLabelColor = EURed60,
+                                        ),
+                                    )
+
+                                    ExposedDropdownMenu(
+                                        expanded = isDropDownMenuPeriodicitiesOpen,
+                                        onDismissRequest = {
+                                            isDropDownMenuPeriodicitiesOpen = false
+                                        }) {
+                                        periodicities.forEach { periodiciti ->
+                                            DropdownMenuItem(
+                                                text = { Text(text = periodiciti.toString()) },
+                                                onClick = {
+                                                    selectedPeriodicities = periodiciti
+                                                    isDropDownMenuPeriodicitiesOpen = false
+                                                },
+                                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                    }
+                }
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 10.dp, end = 10.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .padding(end = 15.dp)
+                            .size(24.dp)
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .background(color = EUGrey100)
+                                .clip(RoundedCornerShape(100.dp)),
+                            imageVector = Icons.Filled.HourglassTop,
+                            contentDescription = "",
+                            tint = Color.White
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(5.dp))
+
+                    Column() {
                         OutlinedTextField(
                             enabled = false,
                             value = duration.value,
@@ -473,9 +561,6 @@ fun TreatmentCard(
                             ),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable {
-                                    durationOpen = true
-                                }
                         )
 
                     }
