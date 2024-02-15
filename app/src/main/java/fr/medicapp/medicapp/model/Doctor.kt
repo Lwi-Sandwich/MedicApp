@@ -29,32 +29,32 @@ data class Doctor(
     /**
      * Le numéro de téléphone du docteur.
      */
-    val phoneNumber: String?,
+    val phoneNumber: String = "",
 
     /**
      * L'adresse email du docteur.
      */
-    val email: String?,
+    val email: String = "",
 
     /**
      * La spécialité du docteur.
      */
-    val specialty: String?,
+    val specialty: String = "",
 
     /**
      * Le code postal du docteur.
      */
-    val zipCode: Int?,
+    val zipCode: Int = 0,
 
     /**
      * La ville du docteur.
      */
-    val city: String?,
+    val city: String = "",
 
     /**
      * L'adresse du docteur.
      */
-    val address: String?
+    val address: String = ""
 ) {
 
     /**

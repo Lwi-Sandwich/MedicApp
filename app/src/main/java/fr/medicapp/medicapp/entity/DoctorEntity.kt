@@ -32,30 +32,30 @@ data class DoctorEntity(
     /**
      * Le numéro de téléphone du médecin.
      */
-    val phoneNumber: String?,
+    val phoneNumber: String = "",
 
     /**
      * L'adresse email du médecin.
      */
-    val email: String?,
+    val email: String = "",
 
     /**
      * La spécialité du médecin.
      */
-    val specialty: String?,
+    val specialty: String = "",
 
     /**
      * Le code postal du médecin.
      */
-    val zipCode: Int?,
+    val zipCode: Int = 0,
 
     /**
      * La ville du médecin.
      */
-    val city: String?,
+    val city: String = "",
 
     /**
      * L'adresse du médecin.
      */
-    val address: String?
+    val address: String = ""
 )
