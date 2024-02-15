@@ -60,6 +60,7 @@ fun NavigationDrawerScreen(navController: NavHostController = rememberNavControl
         NavigationDrawerRoute.Home,
         NavigationDrawerRoute.Calendrier,
         NavigationDrawerRoute.Prescriptions,
+        NavigationDrawerRoute.Docteurs,
         NavigationDrawerRoute.Messages,
         NavigationDrawerRoute.Notifications
     )

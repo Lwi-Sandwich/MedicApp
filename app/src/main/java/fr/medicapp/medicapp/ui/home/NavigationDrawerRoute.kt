@@ -5,11 +5,13 @@ import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Medication
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.RingVolume
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import fr.medicapp.medicapp.R
 import fr.medicapp.medicapp.ui.navigation.CalendarRoute
+import fr.medicapp.medicapp.ui.navigation.DoctorsRoute
 import fr.medicapp.medicapp.ui.navigation.NotificationRoute
 import fr.medicapp.medicapp.ui.navigation.PrescriptionRoute
 import fr.medicapp.medicapp.ui.navigation.SideEffectRoute
@@ -71,6 +73,17 @@ sealed class NavigationDrawerRoute(
         route = PrescriptionRoute.Main.route,
         title = "Mes traitements",
         icon = Icons.Filled.Medication,
+        color = EUPurple60,
+        logo = R.drawable.medicapp_eu_purple
+    )
+
+    /**
+     * Route de l'écran des docteurs.
+     */
+    object Docteurs : NavigationDrawerRoute(
+        route = DoctorsRoute.Main.route,
+        title = "Docteurs",
+        icon = Icons.Filled.Person,
         color = EUPurple60,
         logo = R.drawable.medicapp_eu_purple
     )
