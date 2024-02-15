@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
 import fr.medicapp.medicapp.model.Doctor
 import fr.medicapp.medicapp.model.Notification
+import fr.medicapp.medicapp.ui.doctors.assets.DoctorCard
 import fr.medicapp.medicapp.ui.notifications.NotificationsEdit.getFrenchDayOfWeek
 import fr.medicapp.medicapp.ui.theme.EUPurple100
 import fr.medicapp.medicapp.ui.theme.EUPurple60
@@ -109,45 +110,12 @@ fun DoctorsMainMenu(
         ) {
             if (doctors.isNotEmpty()){
                 for (i in doctors) {
-                    ElevatedCard(
-                        onClick = {
+                    DoctorCard(
+                        onDoctorClick = {
                             onDoctorClick(i.id!!)
                         },
-                        elevation = CardDefaults.cardElevation(
-                            defaultElevation = 6.dp
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight(),
-                        colors =
-                        CardDefaults.cardColors(
-                            containerColor = EUPurple80,
-                            contentColor = Color.White
-                        ),
-                        shape = RoundedCornerShape(10.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .padding(10.dp),
-                        ) {
-
-                            Row() {
-                                Icon(
-                                    imageVector = Icons.Filled.Person,
-                                    contentDescription = "",
-                                    tint = Color.White
-                                )
-
-                                Spacer(modifier = Modifier.width(5.dp))
-                                Text(
-                                    text = i.getFullName(),
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.Bold
-
-                                )
-                            }
-                        }
-                    }
+                        doctor = i
+                    )
                     Spacer(modifier = Modifier.height(10.dp))
                 }
             } else {
