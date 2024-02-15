@@ -60,6 +60,7 @@ import fr.medicapp.medicapp.ui.prescription.SearchDialog
 import fr.medicapp.medicapp.ui.prescription.TimePickerModal
 import fr.medicapp.medicapp.ui.theme.EUGreen100
 import fr.medicapp.medicapp.ui.theme.EUGreen40
+import fr.medicapp.medicapp.ui.theme.EUOrange110
 import fr.medicapp.medicapp.ui.theme.EURed100
 import fr.medicapp.medicapp.ui.theme.EURed20
 import fr.medicapp.medicapp.ui.theme.EURed40
@@ -146,7 +147,7 @@ fun SEDEdit(
                         },
                         shape = RoundedCornerShape(20),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = EURed100,
+                            containerColor = EUOrange110,
                             contentColor = Color.White
                         ),
                         modifier = Modifier
@@ -154,7 +155,7 @@ fun SEDEdit(
                             .weight(3f)
                     ) {
                         Text(
-                            text = "Annuler",
+                            text = "Retour",
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold
                         )

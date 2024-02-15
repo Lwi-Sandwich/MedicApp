@@ -50,6 +50,8 @@ import fr.medicapp.medicapp.ui.theme.EUGreen40
 import fr.medicapp.medicapp.ui.theme.EUPurple80
 import fr.medicapp.medicapp.ui.theme.EURed100
 import java.time.LocalDate
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalContext
 
 /**
  * Cette fonction affiche l'écran d'édition de prescription avec des informations spécifiques.
@@ -265,28 +267,30 @@ fun EditPrescription(
 @Preview(showBackground = true)
 @Composable
 private fun EditPrescriptionPreview() {
-    EditPrescription(
-        prescription = Prescription(),
-        doctors = listOf(
-            Doctor(
-                firstName = "Jean",
-                lastName = "Dupont"
+    CompositionLocalProvider(LocalContext provides LocalContext.current) {
+        EditPrescription(
+            prescription = Prescription(),
+            doctors = listOf(
+                Doctor(
+                    firstName = "Jean",
+                    lastName = "Dupont"
+                ),
+                Doctor(
+                    firstName = "John",
+                    lastName = "Dupont"
+                ),
+                Doctor(
+                    firstName = "Mark",
+                    lastName = "Dupont"
+                ),
             ),
-            Doctor(
-                firstName = "John",
-                lastName = "Dupont"
-            ),
-            Doctor(
-                firstName = "Mark",
-                lastName = "Dupont"
-            ),
-        ),
-        onCancel = {},
-        onConfirm = {},
-        onCameraPicker = {},
-        onCameraPermissionRequested = {},
-        onImagePicker = {},
-        cameraPermissionState = rememberPermissionState(android.Manifest.permission.CAMERA),
-        medications = emptyList()
-    )
+            onCancel = {},
+            onConfirm = {},
+            onCameraPicker = {},
+            onCameraPermissionRequested = {},
+            onImagePicker = {},
+            cameraPermissionState = rememberPermissionState(android.Manifest.permission.CAMERA),
+            medications = emptyList()
+        )
+    }
 }
