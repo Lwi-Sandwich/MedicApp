@@ -82,6 +82,7 @@ import fr.medicapp.medicapp.ui.theme.EUPurple60
 import fr.medicapp.medicapp.ui.theme.EUPurple80
 import fr.medicapp.medicapp.ui.theme.EURed100
 import fr.medicapp.medicapp.ui.theme.EURed60
+import org.w3c.dom.Text
 import java.time.LocalDate
 
 /**
@@ -388,27 +389,9 @@ fun TreatmentCard(
                                 showDialog = false
                             },
                             title = {
-                                Text(text = "Titre de la boîte de dialogue")
+                                Text(text = "Sélectionnez la posologie", textAlign = TextAlign.Center)
                             },
                             text = {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Box(
-                                        modifier = Modifier
-                                            .padding(end = 15.dp)
-                                            .size(24.dp)
-                                    ) {
-                                        Icon(
-                                            modifier = Modifier
-                                                .background(color = EUGreen100)
-                                                .clip(RoundedCornerShape(100.dp)),
-                                            imageVector = Icons.Filled.Medication,
-                                            contentDescription = "",
-                                            tint = Color.White
-                                        )
-                                    }
                                     Spacer(modifier = Modifier.width(5.dp))
 
                                     var durationOpen by remember { mutableStateOf(false) }
@@ -591,7 +574,7 @@ fun TreatmentCard(
                                             }
                                         }
                                     }
-                                }
+
                             },
                             confirmButton = {
                                 Button(
