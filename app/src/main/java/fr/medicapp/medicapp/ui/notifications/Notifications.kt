@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.medicapp.medicapp.model.Notification
 import fr.medicapp.medicapp.ui.notifications.NotificationsEdit.getFrenchDayOfWeek
+import fr.medicapp.medicapp.ui.theme.EUOrange110
 import fr.medicapp.medicapp.ui.theme.EURed100
 import fr.medicapp.medicapp.ui.theme.EUYellow100
 import fr.medicapp.medicapp.ui.theme.EUYellow110
@@ -98,7 +99,7 @@ fun Notifications(
                         },
                         shape = RoundedCornerShape(20),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = EURed100,
+                            containerColor = EUOrange110,
                             contentColor = Color.White
                         ),
                         modifier = Modifier
@@ -106,7 +107,7 @@ fun Notifications(
                             .weight(3f)
                     ) {
                         Text(
-                            text = "Annuler",
+                            text = "Retour",
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold
                         )

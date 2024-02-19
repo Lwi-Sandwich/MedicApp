@@ -1,6 +1,9 @@
 package fr.medicapp.medicapp.ui.home
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,8 +17,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import fr.medicapp.medicapp.ui.theme.EUGreen100
 import fr.medicapp.medicapp.ui.theme.EUGreen120
 
@@ -42,13 +47,31 @@ fun HomeScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "Bonjour, ",
+                fontSize = 20.sp
+            )
+            Text(
+                text = "John Doe",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = EUGreen120
+            )
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
         ElevatedCard(
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 6.dp
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(height = 200.dp),
+                .height(height = 500.dp),
             colors = CardDefaults.cardColors(
                 containerColor = EUGreen120,
                 contentColor = Color.White
@@ -61,8 +84,12 @@ fun HomeScreen(
                     .padding(10.dp),
             ) {
                 Text(
-                    text = "Bonjour, John Doe",
+                    text = "Vos traitements du jour :",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 15.sp
                 )
+                //TODO
+                // Mettre des cartes de traitement
             }
         }
         Button(
