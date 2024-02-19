@@ -35,6 +35,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -47,6 +49,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -155,6 +158,14 @@ fun Prescription(
                 var notification = remember {
                     mutableStateOf(i.notification)
                 }
+                Text(
+                    i.medication?.name ?: "",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(15.dp))
 
                 ElevatedCard(
                     elevation = CardDefaults.cardElevation(
@@ -178,12 +189,6 @@ fun Prescription(
                             .fillMaxSize()
                             .padding(10.dp)
                     ) {
-                        Text(
-                            i.medication?.name ?: "",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-
                         Row(
                             modifier = Modifier.fillMaxWidth()
                         ) {
