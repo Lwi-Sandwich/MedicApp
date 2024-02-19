@@ -75,13 +75,27 @@ data class Doctor(
         return getFullName()
     }
 
+    private fun estStringValide(champ: String): Boolean {
+        return champ.isNotBlank() && champ != "null"
+    }
+
     /**
      * Vérifie si le docteur est valide.
      *
      * @return `true` si le docteur est valide, `false` sinon.
      */
-    fun isValide(): Boolean {
-        return lastName.isNotEmpty() && firstName.isNotEmpty()
+    fun isValid(): Boolean {
+        return listOf(
+            id,
+            lastName,
+            firstName,
+            email,
+            phoneNumber,
+            specialty,
+            zipCode.toString(),
+            city,
+            address
+        ).all { estStringValide(it) }
     }
 
     /**
