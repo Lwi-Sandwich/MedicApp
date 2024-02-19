@@ -133,7 +133,6 @@ fun DoctorsMainMenu(
                         fontStyle = FontStyle.Italic
                     )
                 }
-
             }
         }
     }

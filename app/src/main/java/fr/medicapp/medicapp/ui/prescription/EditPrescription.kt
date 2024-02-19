@@ -66,7 +66,6 @@ import androidx.compose.ui.platform.LocalContext
  * @param prescription La prescription à éditer.
  * @param medications La liste des médicaments disponibles.
  */
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun EditPrescription(
@@ -263,7 +262,6 @@ fun EditPrescription(
 }
 
 @OptIn(ExperimentalPermissionsApi::class)
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 private fun EditPrescriptionPreview() {
