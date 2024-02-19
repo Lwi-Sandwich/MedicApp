@@ -65,7 +65,7 @@ import fr.medicapp.medicapp.ui.theme.EURed60
 import fr.medicapp.medicapp.ui.theme.EUWhite100
 
 /**
- * Cette fonction affiche l'ajout d'un docteur'.
+ * Cette fonction affiche l'ajout d'un docteur.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -251,15 +251,30 @@ fun DoctorsAdd() {
                         .fillMaxWidth()
                         .padding(10.dp)
                 ) {
-                    Row() {
-                        Text(
-                            "25 km",
-                            color = Color.White,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
-                        )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                "250",
+                                color = Color.White,
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                "km",
+                                color = Color.White,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
 
-                        Spacer(modifier = Modifier.width(10.dp))
+
+                        Spacer(modifier = Modifier.width(15.dp))
+
                         Text(
                             "Docteur MEDECIN",
                             color = Color.White,
