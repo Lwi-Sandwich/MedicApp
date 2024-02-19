@@ -74,7 +74,7 @@ fun DoctorsAdd() {
     val context = LocalContext.current
     val navController = rememberNavController()
     var name = remember { mutableStateOf("") }
-    val checkedState = remember { mutableStateOf(false) }
+    var checkedState = remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -206,7 +206,8 @@ fun DoctorsAdd() {
                     )
 
                     Row(
-                        horizontalArrangement = Arrangement.Start,
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.wrapContentWidth()
                     ) {
                         Checkbox(
@@ -267,7 +268,7 @@ fun DoctorsAdd() {
                     }
                 }
             }
-            //Fin de la carte
+            // Fin de la carte
         }
     }
 }
