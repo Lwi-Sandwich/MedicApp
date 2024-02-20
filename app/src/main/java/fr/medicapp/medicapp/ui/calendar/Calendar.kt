@@ -163,7 +163,9 @@ fun Calendar(
 
             MedicationCalendarCard(
                 "10h00",
-                "Médicament exemple"
+                "Médicament exemple",
+                painScale = true,
+                active = true
             )
         }
     }
