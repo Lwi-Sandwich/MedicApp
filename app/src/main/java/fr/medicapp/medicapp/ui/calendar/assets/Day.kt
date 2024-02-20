@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import fr.medicapp.medicapp.ui.calendar.Calendar
 import fr.medicapp.medicapp.ui.notifications.NotificationsEdit.getFrenchDayOfWeek
 import fr.medicapp.medicapp.ui.theme.EUGreen120
+import fr.medicapp.medicapp.ui.theme.EUGreen140
 import fr.medicapp.medicapp.ui.theme.EUGreen20
 import fr.medicapp.medicapp.ui.theme.EUGreen80
 import fr.medicapp.medicapp.ui.theme.EURed120
@@ -43,9 +44,8 @@ import java.time.LocalDate
 
 /*
     Exemple :
-
-    LU  MA  ME  JE  VE  SA  DI
-    10  11  12  13  14  15  16
+    LUN  MAR  MER  JEU  VEN  SAM  DIM
+     1    2    3    4    5    6    7
 */
 
 @RequiresApi(Build.VERSION_CODES.O)

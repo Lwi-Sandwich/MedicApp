@@ -2,6 +2,7 @@ package fr.medicapp.medicapp.ui.calendar
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,11 +48,14 @@ import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
 import com.kizitonwose.calendar.core.atStartOfMonth
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import fr.medicapp.medicapp.ui.calendar.assets.Day
+import fr.medicapp.medicapp.ui.calendar.assets.MedicationCalendarCard
 import fr.medicapp.medicapp.ui.theme.EUGreen100
 import fr.medicapp.medicapp.ui.theme.EUGreen120
 import fr.medicapp.medicapp.ui.theme.EUGreen20
 import fr.medicapp.medicapp.ui.theme.EUGreen80
 import fr.medicapp.medicapp.ui.theme.EUYellow110
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
@@ -100,11 +105,13 @@ fun Calendar(
                 firstDayOfWeek = firstDayOfWeek
             )
 
+            var coroutine = rememberCoroutineScope()
             monthSelection = state.firstVisibleWeek.days.first().date.month
             yearSelection = state.firstVisibleWeek.days.first().date.year
 
             Box(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -112,7 +119,15 @@ fun Calendar(
                         .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }} $yearSelection",
                     fontWeight = FontWeight.Bold,
                     fontSize = 22.sp,
-                    color = EUGreen120
+                    color = EUGreen120,
+                    modifier = Modifier
+                        .clickable {
+                            coroutine.launch {
+                                selection = currentDate
+                                state.animateScrollToWeek(currentDate)
+                            }
+                    }
+
                 )
             }
 
@@ -142,47 +157,14 @@ fun Calendar(
                     }
                 }
             ) {
-
             }
 
             Spacer(modifier = Modifier.height(15.dp))
 
-            ElevatedCard(
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 6.dp
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
-                colors =
-                CardDefaults.cardColors(
-                    containerColor = EUGreen100,
-                    contentColor = Color.White
-                ),
-                shape = RoundedCornerShape(10.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(5.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Medication,
-                            contentDescription = "",
-                            tint = Color.White
-                        )
-                        Text("Médicament exemple",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 15.sp
-                        )
-                    }
-                    Text("10h00",
-                        fontSize = 15.sp
-                    )
-                }
-
-            }
+            MedicationCalendarCard(
+                "10h00",
+                "Médicament exemple"
+            )
         }
     }
 }
