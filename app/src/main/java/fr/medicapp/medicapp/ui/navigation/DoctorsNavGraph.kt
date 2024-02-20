@@ -1,7 +1,18 @@
 package fr.medicapp.medicapp.ui.navigation
 
+import android.annotation.SuppressLint
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -14,6 +25,11 @@ import fr.medicapp.medicapp.ui.calendar.Calendar
 import fr.medicapp.medicapp.ui.doctors.DoctorInfos
 import fr.medicapp.medicapp.ui.doctors.DoctorsAdd
 import fr.medicapp.medicapp.ui.doctors.DoctorsMainMenu
+import fr.medicapp.medicapp.viewModel.SharedDoctorViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 fun NavGraphBuilder.doctorsNavGraph(navController: NavHostController) {
     /**
@@ -52,14 +68,17 @@ fun NavGraphBuilder.doctorsNavGraph(navController: NavHostController) {
             val id = it.arguments?.getString("id") ?: return@composable
             val db = AppDatabase.getInstance(LocalContext.current)
             val repoDoc = DoctorRepository(db.doctorDAO())
-            var doc = remember {Doctor("1", "", "")}
-            Thread {
-                val docteur = repoDoc.getOne(id).toDoctor()
-                if (docteur.isValid()) {
-                    doc = docteur
-            }
-            }.start()
-            DoctorInfos()
+            val viewModel = it.sharedViewModel<SharedDoctorViewModel>(navController = navController)
+            val state by viewModel.sharedState.collectAsStateWithLifecycle()
+
+           Thread{
+               viewModel.getDoctor(id, repoDoc)
+           }.start()
+
+            DoctorInfos(
+                state,
+                onClose = {navController.popBackStack()}
+            )
         }
     }
 }

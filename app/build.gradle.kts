@@ -133,4 +133,6 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.danilopianini/khttp
     implementation("org.danilopianini:khttp:1.5.0")
+
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.1")
 }
