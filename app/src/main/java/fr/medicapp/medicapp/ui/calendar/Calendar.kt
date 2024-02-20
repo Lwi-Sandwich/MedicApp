@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Medication
@@ -163,7 +165,7 @@ fun Calendar(
                     ,*/
                     state = state,
                     dayContent = { day ->
-                        Day(day.date, isSelected = selection == day.date, medicationNumber = 1) { clicked ->
+                        Day(day.date, isSelected = selection == day.date, medicationNumber = 0) { clicked ->
                             if (selection != clicked) {
                                 selection = clicked
                             }
@@ -175,12 +177,67 @@ fun Calendar(
 
             Spacer(modifier = Modifier.height(15.dp))
 
-            MedicationCalendarCard(
-                "10h00",
-                "Médicament exemple",
-                painScale = true,
-                active = true
-            )
+            Column(
+                modifier = Modifier
+                    .verticalScroll(
+                        enabled = true,
+                        state = rememberScrollState()
+                    )
+            ) {
+                MedicationCalendarCard(
+                    "10h00",
+                    "Médicament exemple",
+                    painScale = true,
+                    active = true
+                )
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                MedicationCalendarCard(
+                    "11h00",
+                    "Médicament exemple",
+                    painScale = true,
+                    active = false
+                )
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                MedicationCalendarCard(
+                    "12h00",
+                    "Médicament exemple",
+                    painScale = false,
+                    active = true
+                )
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                MedicationCalendarCard(
+                    "13h00",
+                    "Médicament exemple",
+                    painScale = false,
+                    active = false
+                )
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                MedicationCalendarCard(
+                    "14h00",
+                    "Médicament exemple",
+                    painScale = true,
+                    active = true
+                )
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                MedicationCalendarCard(
+                    "15h00",
+                    "Médicament exemple",
+                    painScale = true,
+                    active = false
+                )
+            }
+
+
         }
     }
 }

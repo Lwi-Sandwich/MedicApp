@@ -66,6 +66,8 @@ import fr.medicapp.medicapp.ui.theme.EURed20
 import fr.medicapp.medicapp.ui.theme.EURed40
 import fr.medicapp.medicapp.ui.theme.EURed60
 import fr.medicapp.medicapp.ui.theme.EURed80
+import fr.medicapp.medicapp.ui.theme.EUYellow100
+import fr.medicapp.medicapp.ui.theme.EUYellow40
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -437,6 +439,21 @@ fun SEDEdit(
 
                     for (i in 0 until sideeffects.effetsConstates.size) {
                         var effetsConstates = remember { mutableStateOf(sideeffects.effetsConstates[i]) }
+                        var sideEffectsOpen by remember { mutableStateOf(false) }
+
+                        if (sideEffectsOpen) {
+                            SearchDialog(
+                                options = treatments.map { it.toOptionDialog() },
+                                cardColor = EUYellow40,
+                                selectedCardColor = EUYellow100,
+                                onDismiss = {
+                                    sideEffectsOpen = false
+                                },
+                                onValidate = { option ->
+                                    //TODO
+                                }
+                            )
+                        }
 
                         LaunchedEffect(sideeffects.effetsConstates[i]) {
                             effetsConstates.value = sideeffects.effetsConstates[i]
@@ -468,7 +485,11 @@ fun SEDEdit(
                                 focusedBorderColor = Color.White,
                                 unfocusedBorderColor = Color.White,
                             ),
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    sideEffectsOpen = true
+                                }
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                     }
