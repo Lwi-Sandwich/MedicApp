@@ -52,6 +52,7 @@ import fr.medicapp.medicapp.ui.theme.EURed100
 import java.time.LocalDate
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
+import java.util.UUID
 
 /**
  * Cette fonction affiche l'écran d'édition de prescription avec des informations spécifiques.
@@ -217,6 +218,7 @@ fun EditPrescription(
                         Log.d("EditPrescription", "AddButton: onClick")
                         var treatment = Treatment(
                             duration = Duration(
+                                idd = 0,
                                 startDate = LocalDate.now(),
                                 endDate = LocalDate.now(),
                             ),

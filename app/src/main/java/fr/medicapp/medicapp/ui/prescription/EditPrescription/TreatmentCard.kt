@@ -300,7 +300,7 @@ fun TreatmentCard(
                                 durationOpen = false
                             }),
                             selection = CalendarSelection.Period { startDate, endDate ->
-                                treatment.duration = Duration(startDate, endDate)
+                                treatment.duration = Duration(0,startDate, endDate)
                                 duration.value = treatment.duration.toString()
                                 durationOpen = false
                             },
@@ -343,7 +343,7 @@ fun TreatmentCard(
                             label = { Text("Durée") },
                             shape = RoundedCornerShape(20),
                             trailingIcon = {
-                                if (treatment.query != "" && duration.value == Duration(LocalDate.now(), LocalDate.now()).toString()) {
+                                if (treatment.query != "" && duration.value == Duration(0,LocalDate.now(), LocalDate.now()).toString()) {
                                     Icon(
                                         imageVector = Icons.Filled.WarningAmber,
                                         contentDescription = "",

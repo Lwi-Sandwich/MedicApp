@@ -49,6 +49,7 @@ import com.kizitonwose.calendar.compose.WeekCalendar
 import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
 import com.kizitonwose.calendar.core.atStartOfMonth
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
+import fr.medicapp.medicapp.model.Notification
 import fr.medicapp.medicapp.ui.calendar.assets.Day
 import fr.medicapp.medicapp.ui.calendar.assets.MedicationCalendarCard
 import fr.medicapp.medicapp.ui.theme.EUGreen100
@@ -67,6 +68,7 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Calendar(
+    notifications : MutableMap<String,MutableList<Notification>>
 ) {
     val darkmode: Boolean = isSystemInDarkTheme()
     Scaffold(
@@ -194,7 +196,7 @@ fun Calendar(
                 Spacer(modifier = Modifier.height(15.dp))
 
                 MedicationCalendarCard(
-                    "11h00",
+                    notifications.size.toString(),
                     "Médicament exemple",
                     painScale = true,
                     active = false
@@ -245,5 +247,5 @@ fun Calendar(
 @Preview(showBackground = true)
 @Composable
 private fun CalendarPreview() {
-    Calendar()
+    Calendar(mutableMapOf())
 }
