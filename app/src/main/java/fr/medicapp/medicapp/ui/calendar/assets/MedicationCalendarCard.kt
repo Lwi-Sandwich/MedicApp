@@ -121,12 +121,14 @@ fun MedicationCalendarCard(
                     Text(
                         "Douleur ressentie : ",
                         color = if (activeCard) Color.White else EUGreen40,
+                        fontSize = 16.sp,
                         fontStyle = if (activeCard) FontStyle.Normal else FontStyle.Italic
                     )
                     Text(
                         sliderValue.toInt().toString(),
                         fontWeight = FontWeight.Bold,
                         color = if (activeCard) Color.White else EUGreen40,
+                        fontSize = 16.sp,
                         fontStyle = if (activeCard) FontStyle.Normal else FontStyle.Italic
                     )
                 }
@@ -143,5 +145,5 @@ fun MedicationCalendarCardPreview() {
         "10h00",
         "Médicament test",
         painScale = true,
-        active = false)
+        active = true)
 }

@@ -126,8 +126,7 @@ fun Calendar(
                                 selection = currentDate
                                 state.animateScrollToWeek(currentDate)
                             }
-                    }
-
+                        }
                 )
             }
 
@@ -140,23 +139,38 @@ fun Calendar(
                 textAlign = TextAlign.Center
             )*/
 
-            WeekCalendar(
+            ElevatedCard(
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 6.dp
+                ),
                 modifier = Modifier
-                    .drawBehind {
-                        drawRoundRect(
-                            EUGreen20,
-                            cornerRadius = CornerRadius(10.dp.toPx())
-                        )
-                    }
-                ,
-                state = state,
-                dayContent = { day -> Day(day.date, isSelected = selection == day.date) { clicked ->
-                        if (selection != clicked) {
-                            selection = clicked
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
+                colors =
+                CardDefaults.cardColors(
+                    containerColor = EUGreen100
+                ),
+                shape = RoundedCornerShape(10.dp)
+            ) {
+                WeekCalendar(
+                    /*modifier = Modifier
+                        .drawBehind {
+                            drawRoundRect(
+                                EUGreen20,
+                                cornerRadius = CornerRadius(10.dp.toPx())
+                            )
+                        }
+                    ,*/
+                    state = state,
+                    dayContent = { day ->
+                        Day(day.date, isSelected = selection == day.date, medicationNumber = 1) { clicked ->
+                            if (selection != clicked) {
+                                selection = clicked
+                            }
                         }
                     }
+                ) {
                 }
-            ) {
             }
 
             Spacer(modifier = Modifier.height(15.dp))
