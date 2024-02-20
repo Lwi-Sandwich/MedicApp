@@ -33,7 +33,7 @@ import fr.medicapp.medicapp.entity.UserEntity
         MedicationEntity::class,
         NotificationEntity::class
     ],
-    version = 1
+    version = 2
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -110,7 +110,7 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     DATABASE_NAME
-                ).createFromAsset(PREDATABASE_NAME).build()
+                ).createFromAsset(PREDATABASE_NAME).fallbackToDestructiveMigration().build()
                 INSTANCE = instance
                 instance
             }

@@ -66,6 +66,7 @@ import androidx.compose.ui.platform.LocalContext
  * @param prescription La prescription à éditer.
  * @param medications La liste des médicaments disponibles.
  */
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun EditPrescription(
@@ -261,34 +262,36 @@ fun EditPrescription(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalPermissionsApi::class)
 @Preview(showBackground = true)
 @Composable
 private fun EditPrescriptionPreview() {
-    CompositionLocalProvider(LocalContext provides LocalContext.current) {
-        EditPrescription(
-            prescription = Prescription(),
-            doctors = listOf(
-                Doctor(
-                    firstName = "Jean",
-                    lastName = "Dupont"
-                ),
-                Doctor(
-                    firstName = "John",
-                    lastName = "Dupont"
-                ),
-                Doctor(
-                    firstName = "Mark",
-                    lastName = "Dupont"
-                ),
+    EditPrescription(
+        prescription = Prescription(),
+        doctors = listOf(
+            Doctor(
+                id = "1",
+                firstName = "Jean",
+                lastName = "Dupont",
             ),
-            onCancel = {},
-            onConfirm = {},
-            onCameraPicker = {},
-            onCameraPermissionRequested = {},
-            onImagePicker = {},
-            cameraPermissionState = rememberPermissionState(android.Manifest.permission.CAMERA),
-            medications = emptyList()
-        )
-    }
+            Doctor(
+                id = "2",
+                firstName = "John",
+                lastName = "Dupont",
+            ),
+            Doctor(
+                id = "3",
+                firstName = "Mark",
+                lastName = "Dupont",
+            ),
+        ),
+        onCancel = {},
+        onConfirm = {},
+        onCameraPicker = {},
+        onCameraPermissionRequested = {},
+        onImagePicker = {},
+        cameraPermissionState = rememberPermissionState(android.Manifest.permission.CAMERA),
+        medications = emptyList()
+    )
 }
