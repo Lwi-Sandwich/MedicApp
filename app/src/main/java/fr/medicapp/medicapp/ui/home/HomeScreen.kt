@@ -8,35 +8,26 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.HourglassTop
-import androidx.compose.material.icons.filled.Medication
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import fr.medicapp.medicapp.ui.home.assets.DayTreatment
 import fr.medicapp.medicapp.ui.theme.EUGreen100
 import fr.medicapp.medicapp.ui.theme.EUGreen120
-import fr.medicapp.medicapp.ui.theme.EUGreen40
-import fr.medicapp.medicapp.ui.theme.EUGreen80
 
 /**
  * Écran d'accueil de l'application MedicApp.
@@ -85,11 +76,7 @@ fun HomeScreen(
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(300.dp)
-                .verticalScroll(
-                    enabled = true,
-                    state = rememberScrollState()
-                ),
+                .height(300.dp),
             colors = CardDefaults.cardColors(
                 containerColor = EUGreen120,
                 contentColor = Color.White
@@ -111,22 +98,54 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                //TODO
-                // Mettre des cartes de traitement
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(
+                            enabled = true,
+                            state = rememberScrollState()
+                        )
+                ) {
+                    //TODO
+                    // Mettre des cartes de traitement
 
-                DayTreatment(
-                    enabled = true,
-                    hour = "14h",
-                    medication = "Médicament test 1"
-                )
+                    DayTreatment(
+                        enabled = false,
+                        hour = "14h",
+                        medication = "Médicament test 1"
+                    )
 
-                Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
-                DayTreatment(
-                    enabled = false,
-                    hour = "15h",
-                    medication = "Médicament test 2"
-                )
+                    DayTreatment(
+                        enabled = false,
+                        hour = "15h",
+                        medication = "Médicament test 2"
+                    )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    DayTreatment(
+                        enabled = true,
+                        hour = "16h",
+                        medication = "Médicament test 3"
+                    )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    DayTreatment(
+                        enabled = true,
+                        hour = "18h",
+                        medication = "Médicament test 4"
+                    )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    DayTreatment(
+                        enabled = true,
+                        hour = "20h",
+                        medication = "Médicament test 5"
+                    )
+                }
             }
         }
 
