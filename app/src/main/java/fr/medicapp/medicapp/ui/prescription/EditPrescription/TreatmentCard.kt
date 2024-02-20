@@ -30,6 +30,7 @@ import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.WarningAmber
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
@@ -372,8 +373,8 @@ fun TreatmentCard(
                     val numbers = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
                     val units = listOf(
                         "fois",
-                        "comprimé",
-                        "gélule"
+                        "comprimés",
+                        "gélules"
                     ) // Ajouter d'autres options au besoin
                     val periodicities = listOf("jour", "semaine", "mois")
 
@@ -394,21 +395,6 @@ fun TreatmentCard(
                             text = {
                                     Spacer(modifier = Modifier.width(5.dp))
 
-                                    var durationOpen by remember { mutableStateOf(false) }
-
-                                    if (durationOpen) {
-                                        CalendarDialog(
-                                            state = rememberUseCaseState(true, onCloseRequest = {
-                                                durationOpen = false
-                                            }),
-                                            selection = CalendarSelection.Period { startDate, endDate ->
-                                                treatment.duration = Duration(startDate, endDate)
-                                                duration.value = treatment.duration.toString()
-                                                durationOpen = false
-                                            },
-                                        )
-                                    }
-
                                     Column() {
                                         Row {
                                             ExposedDropdownMenuBox(
@@ -416,7 +402,7 @@ fun TreatmentCard(
                                                 onExpandedChange = {
                                                     isDropDownMenuNumbersOpen = !isDropDownMenuNumbersOpen
                                                 },
-                                                modifier = Modifier.weight(1f)
+                                                modifier = Modifier.weight(0.5f)
                                             ) {
                                                 TextField(
                                                     modifier = Modifier.menuAnchor(),
@@ -583,7 +569,11 @@ fun TreatmentCard(
                                         showDialog = false
                                         posology.value = "$selectedNumber $selectedUnits par $selectedPeriodicities"
                                         treatment.posology = posology.value
-                                    }
+                                    },
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = EUPurple60,
+                                        contentColor = Color.White,
+                                    ),
                                 ) {
                                     Text(text = "Confirmer")
                                 }
@@ -593,7 +583,11 @@ fun TreatmentCard(
                                     onClick = {
                                         // Actions à effectuer lors du rejet
                                         showDialog = false
-                                    }
+                                    },
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = EUPurple60,
+                                        contentColor = Color.White,
+                                    ),
                                 ) {
                                     Text(text = "Retour")
                                 }
@@ -652,7 +646,8 @@ fun TreatmentCard(
                                 errorLabelColor = EURed60,
                             ),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
+                            suffix = { Text("fois") }
                         )
                     }
                 }
@@ -702,7 +697,8 @@ fun TreatmentCard(
                             errorLabelColor = EURed60,
                         ),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        suffix = { Text("fois") }
                     )
                 }
             }

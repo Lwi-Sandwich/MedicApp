@@ -151,8 +151,6 @@ fun Prescription(
                 .fillMaxSize()
                 .padding(10.dp)
         ) {
-            Spacer(modifier = Modifier.height(15.dp))
-
             // Itération de la liste des médicaments
             for (i in consultation) {
                 var notification = remember {
@@ -162,10 +160,11 @@ fun Prescription(
                     i.medication?.name ?: "",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(5.dp)
                 )
 
-                Spacer(modifier = Modifier.height(15.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
                 ElevatedCard(
                     elevation = CardDefaults.cardElevation(
@@ -214,12 +213,38 @@ fun Prescription(
                                     .padding(top = 10.dp)
                             ) {
                                 Text(
-                                    "Notification de rappel ${ if (i.notification) "activée" else "désactivée" }",
+                                    "Notification de rappel ${if (i.notification) "activée" else "désactivée"}",
                                     fontSize = 18.sp
                                 )
                             }
                         }
+                    }
+                }
 
+                Spacer(modifier = Modifier.height(15.dp))
+
+                ElevatedCard(
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 6.dp
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = EUPurple20,
+                        contentColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(5.dp),
+                        modifier = Modifier
+                            .verticalScroll(
+                                enabled = true,
+                                state = rememberScrollState()
+                            )
+                            .fillMaxSize()
+                            .padding(10.dp)
+                    ) {
                         Row() {
                             Box(
                                 modifier = Modifier
@@ -233,6 +258,11 @@ fun Prescription(
                                 )
                             }
                             Spacer(modifier = Modifier.width(5.dp))
+                            Text(
+                                "Posologie : ",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold
+                            )
                             Text(
                                 i.posology,
                                 fontSize = 18.sp
@@ -285,11 +315,9 @@ fun Prescription(
                                     fontSize = 18.sp
                                 )
                             }
-                            Spacer(modifier = Modifier.width(5.dp))
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(20.dp))
             }
         }
     }
