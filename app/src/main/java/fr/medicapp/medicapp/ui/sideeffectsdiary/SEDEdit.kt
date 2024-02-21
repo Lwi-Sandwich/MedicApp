@@ -70,6 +70,7 @@ import fr.medicapp.medicapp.ui.theme.EURed40
 import fr.medicapp.medicapp.ui.theme.EURed60
 import fr.medicapp.medicapp.ui.theme.EURed80
 import java.time.Instant
+import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
@@ -128,7 +129,7 @@ fun SEDEdit(
                 ),
                 title = {
                     Text(
-                        "Journal des effets",
+                        "Ajouter un nouvel effet",
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -422,7 +423,7 @@ fun SEDEdit(
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(height = 115.dp + (sideeffects.effetsConstates.size * 63 + sideeffects.effetsConstates.size).dp),
+                    .wrapContentHeight(),
                 colors =
                 CardDefaults.cardColors(
                     containerColor = EURed80,
@@ -478,6 +479,7 @@ fun SEDEdit(
                                 },
                                 onValidate = { option ->
                                     effetsConstates.value = option.title
+                                    sideeffects.effetsConstates[i] = option.title
                                     sideEffectsOpen = false
                                 }
                             )
@@ -496,7 +498,7 @@ fun SEDEdit(
                             ),
                             onValueChange = {
                                 /*effetsConstates.value = it
-                                sideeffects.effetsConstates[i] = it*/
+                                sideeffects.effetsConstates[i] = effetsConstates.value*/
                             },
                             shape = RoundedCornerShape(20),
                             trailingIcon = {
