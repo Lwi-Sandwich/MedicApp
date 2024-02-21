@@ -115,7 +115,7 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     DATABASE_NAME
-                ).createFromAsset(PREDATABASE_NAME).fallbackToDestructiveMigration().build()
+                ).createFromAsset(PREDATABASE_NAME).build()
                 INSTANCE = instance
                 instance
             }

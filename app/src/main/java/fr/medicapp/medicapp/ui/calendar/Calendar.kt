@@ -50,6 +50,7 @@ import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
 import com.kizitonwose.calendar.core.atStartOfMonth
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import fr.medicapp.medicapp.model.Notification
+import fr.medicapp.medicapp.model.Treatment
 import fr.medicapp.medicapp.ui.calendar.assets.Day
 import fr.medicapp.medicapp.ui.calendar.assets.MedicationCalendarCard
 import fr.medicapp.medicapp.ui.theme.EUGreen100
@@ -68,7 +69,8 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Calendar(
-    notifications : MutableMap<String,MutableList<Notification>>
+    treatments : MutableList<Treatment>,
+    notifications : MutableList<Notification>
 ) {
     val darkmode: Boolean = isSystemInDarkTheme()
     Scaffold(
@@ -196,7 +198,7 @@ fun Calendar(
                 Spacer(modifier = Modifier.height(15.dp))
 
                 MedicationCalendarCard(
-                    notifications.size.toString(),
+                    notifications.toString(),
                     "Médicament exemple",
                     painScale = true,
                     active = false
@@ -247,5 +249,52 @@ fun Calendar(
 @Preview(showBackground = true)
 @Composable
 private fun CalendarPreview() {
-    Calendar(mutableMapOf())
+    Calendar(mutableListOf(), mutableListOf())
 }
+
+
+fun treatmentOfTheDay(treatments: List<Treatment>, notifications: List<Notification>, day : LocalDate) : MutableMap<String, Pair<MutableList<Int>,MutableList<Int>>> {
+    //var result = mutableListOf<Pair<Treatment,Pair<MutableList<Int>,MutableList<Int>>>>()
+    /*for (treatment in treatments) {
+        if (treatment.duration!!.startDate <= day && treatment.duration!!.endDate >= day) {
+            var posology = treatment.posology.split(" ")
+            var quantity = posology[0]
+            var dateFrequency : LocalDate? = null
+            if (posology[3] == "jour") {
+                result[treatment.medication!!.cisCode] = Pair(mutableListOf(), mutableListOf())
+            } else if (posology[3] == "semaine") {
+                if (day.dayOfWeek)
+            }
+        }
+    }*/
+
+
+    var result = mutableMapOf<String, Pair<MutableList<Int>,MutableList<Int>>>()
+    for (notification in notifications) {
+        var durationNotif = notification.medicationName!!.duration!!
+        if (durationNotif.startDate <= day && durationNotif.endDate >= day) {
+            var treatment = notification.medicationName!!
+            var posology = treatment.posology.split(" ")
+            //var quantity = posology[0]
+            //var dateFrequency : LocalDate? = null
+            if (posology[3] == "jour") {
+                result[treatment.medication!!.name] = Pair(notification.hours, notification.minutes)
+            } else if (posology[3] == "semaine") {
+                if (notification.frequency.contains(day.dayOfWeek)) {
+                    result[treatment.medication!!.name] = Pair(notification.hours, notification.minutes)
+                }
+            } else {
+                if (notification.frequency.contains(day.dayOfWeek)) {
+                    result[treatment.medication!!.name] = Pair(notification.hours, notification.minutes)
+                }
+            }
+        }
+    }
+
+    //result.sortBy { it -> it.posology }
+
+    return result
+}
+
+
+fun sortedTreatment(treatments: MutableMap<String, Pair<MutableList<Int>,MutableList<Int>>>) {}

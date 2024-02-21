@@ -9,10 +9,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import fr.medicapp.medicapp.database.AppDatabase
 import fr.medicapp.medicapp.model.Notification
+import fr.medicapp.medicapp.model.Treatment
 import fr.medicapp.medicapp.repository.MedicationRepository
 import fr.medicapp.medicapp.repository.NotificationRepository
 import fr.medicapp.medicapp.repository.TreatmentRepository
 import fr.medicapp.medicapp.ui.calendar.Calendar
+import fr.medicapp.medicapp.ui.prescription.PrescriptionMainMenu
 import java.util.UUID
 
 fun NavGraphBuilder.calendarNavGraph(navController: NavHostController) {
@@ -25,17 +27,15 @@ fun NavGraphBuilder.calendarNavGraph(navController: NavHostController) {
     ) {
 
         composable(route = CalendarRoute.Main.route) {
-            val db = AppDatabase.getInstance(LocalContext.current)
-            val repositoryNotification = NotificationRepository(db.notificationDAO())
+            /*val db = AppDatabase.getInstance(LocalContext.current)
             val repositoryTreatment = TreatmentRepository(db.treatmentDAO())
-            val repositoryMedication = MedicationRepository(db.medicationDAO())
 
             var result: MutableList<Notification> = mutableListOf()
             var resultDico = mutableMapOf<String, MutableList<Notification>>()
             Thread {
-                val notificationEntityTmp = repositoryNotification.getAll()
+                val treatmentEntityTmp = repositoryTreatment.getAll()
 
-                val notifications = notificationEntityTmp.map {
+                /*val notifications = notificationEntityTmp.map {
                     val treatmentTmp = repositoryTreatment.getOne(it.medicationName)
                         .toTreatment(repositoryMedication)
                     val notificationTmp = it.toNotification()
@@ -50,12 +50,50 @@ fun NavGraphBuilder.calendarNavGraph(navController: NavHostController) {
 
                 resultDico.forEach {
                     Log.d("TAG", it.toString())
-                }
+                }*/
             }.start()
             val notification = remember {
                 resultDico
             }
-            Calendar(notification)
+            Calendar(notification)*/
+
+            val db = AppDatabase.getInstance(LocalContext.current)
+            val repositoryTreatment = TreatmentRepository(db.treatmentDAO())
+            val repositoryMedication = MedicationRepository(db.medicationDAO())
+            val repositoryNotification = NotificationRepository(db.notificationDAO())
+
+            var resultTreatment : MutableList<Treatment> = mutableListOf()
+            var resultNotification : MutableList<Notification> = mutableListOf()
+            Thread {
+                val treatments = repositoryTreatment.getAll().map { it.toTreatment(repositoryMedication) }
+                val notifications = repositoryNotification.getAll().map { it.toNotification(repositoryTreatment, repositoryMedication) }
+
+                resultTreatment.clear()
+                resultTreatment.addAll(treatments)
+
+                resultNotification.clear()
+                resultNotification.addAll(notifications)
+
+                resultTreatment.forEach {
+                    Log.d("TAG", it.toString())
+                }
+                resultNotification.forEach {
+                    Log.d("TAG", it.toString())
+                }
+            }.start()
+
+            val treatment = remember {
+                resultTreatment
+            }
+
+            val notification = remember {
+                resultNotification
+            }
+
+            Calendar(
+                treatment,
+                notification
+            )
         }
     }
 }
