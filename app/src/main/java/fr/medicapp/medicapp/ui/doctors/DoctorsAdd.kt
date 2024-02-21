@@ -75,18 +75,17 @@ import fr.medicapp.medicapp.ui.theme.EUWhite100
 @Composable
 fun DoctorsAdd(
     doctorsList: List<Pair<Doctor, Int>> = listOf(),
-    onSearch: (String) -> Unit = {},
+    onSearch: (String, Boolean) -> Unit = {_,_->},
+    onCheckDistance: (Boolean) -> Unit = {},
     getDistance: (Doctor) -> Int = { 0 },
     onCancel: () -> Unit = {},
     onConfirm: (Doctor) -> Unit = {}
 ) {
 
-    var doctorSelected = remember { mutableStateOf<Doctor?>(null) }
-    var darkmode : Boolean = isSystemInDarkTheme()
-    val context = LocalContext.current
-    val navController = rememberNavController()
-    var name = remember { mutableStateOf("") }
-    var checkedState = remember { mutableStateOf(false) }
+    val doctorSelected = remember { mutableStateOf<Doctor?>(null) }
+    val darkmode : Boolean = isSystemInDarkTheme()
+    val name = remember { mutableStateOf("") }
+    val checkedState = remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -220,7 +219,10 @@ fun DoctorsAdd(
                     ) {
                         Checkbox(
                             checked = checkedState.value,
-                            onCheckedChange = { checkedState.value = it },
+                            onCheckedChange = {
+                                checkedState.value = it
+                                onCheckDistance(it)
+                            },
                             colors = CheckboxDefaults.colors(
                                 uncheckedColor = EUPurple20,
                                 checkedColor = EUPurple40,
@@ -237,7 +239,7 @@ fun DoctorsAdd(
 
                         Button(
                             onClick = {
-                                onSearch(name.value)
+                                onSearch(name.value, checkedState.value)
                                 doctorSelected.value = null
                             },
                             colors = ButtonDefaults.buttonColors(

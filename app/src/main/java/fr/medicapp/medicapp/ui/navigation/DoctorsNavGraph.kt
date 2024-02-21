@@ -1,8 +1,12 @@
 package fr.medicapp.medicapp.ui.navigation
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -11,6 +15,8 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
@@ -69,12 +75,23 @@ fun NavGraphBuilder.doctorsNavGraph(navController: NavHostController) {
             val state by viewModel.sharedStateList.collectAsStateWithLifecycle()
             val db = AppDatabase.getInstance(LocalContext.current)
             val repoDoc = DoctorRepository(db.doctorDAO())
+            val context = LocalContext.current
+            val locationPermissions = arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION)
+            val locationPermissionLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.RequestMultiplePermissions(),
+                onResult = { permissions ->
+                    permissions.values.reduce { acc, isPermissionGranted ->
+                        acc && isPermissionGranted
+                    }
+                })
 
             DoctorsAdd(
                 doctorsList = state,
-                onSearch = {
+                onSearch = {nom, tri ->
                     Thread {
-                       viewModel.getDoctorsByName(api, it)
+                       viewModel.getDoctorsByName(api, nom, tri, context)
                     }.start()
                 },
                 onCancel = {navController.navigate(DoctorsRoute.Main.route)},
@@ -97,6 +114,15 @@ fun NavGraphBuilder.doctorsNavGraph(navController: NavHostController) {
                         } catch (_: Exception) { }
                     }.start()
                     navController.navigate(DoctorsRoute.Main.route)
+                },
+                onCheckDistance = {
+                    if (it) {
+                        val permission = Manifest.permission.ACCESS_FINE_LOCATION
+                        if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                            locationPermissionLauncher.launch(locationPermissions)
+                        }
+                    }
+
                 }
             )
         }
@@ -140,7 +166,7 @@ fun NavGraphBuilder.doctorsNavGraph(navController: NavHostController) {
                             navController.navigate(DoctorsRoute.Main.route)
                         }
                     }.start()
-                }
+                },
             )
         }
     }
