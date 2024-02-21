@@ -2,6 +2,7 @@ package fr.medicapp.medicapp.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import fr.medicapp.medicapp.model.Doctor
 
 /**
  * Entité représentant un médecin dans la base de données.
@@ -58,4 +59,16 @@ data class DoctorEntity(
      * L'adresse du médecin.
      */
     val address: String = ""
-)
+) {
+    fun toDoctor() = Doctor(
+        id = id,
+        lastName = lastName,
+        firstName = firstName,
+        phoneNumber = phoneNumber,
+        email = email,
+        specialty = specialty,
+        zipCode = zipCode,
+        city = city,
+        address = address
+    )
+}

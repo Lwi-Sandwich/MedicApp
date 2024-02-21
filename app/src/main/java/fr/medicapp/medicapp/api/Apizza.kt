@@ -56,7 +56,7 @@ class Apizza private constructor() {
     fun getDoctorsByName(name: String): List<Doctor> {
         val response = khttp.get(
             apiUrl,
-            params = mapOf("search" to name.lowercase(), "_per_page" to "20")
+            params = mapOf("search" to name.lowercase(), "_per_page" to "100")
         )
         if (response.statusCode != 200) {
             return listOf()

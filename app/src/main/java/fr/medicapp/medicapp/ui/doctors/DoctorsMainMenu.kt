@@ -63,7 +63,7 @@ import fr.medicapp.medicapp.ui.theme.EUYellow120
 @Composable
 fun DoctorsMainMenu(
     doctors : MutableList<Doctor>,
-    onDoctorClick : (String) -> Unit = {},
+    onDoctorClick : (Doctor) -> Unit = {},
     addDoctor : () -> Unit = {}
 ) {
     var darkmode : Boolean = isSystemInDarkTheme()
@@ -112,7 +112,7 @@ fun DoctorsMainMenu(
                 for (i in doctors) {
                     DoctorCard(
                         onDoctorClick = {
-                            onDoctorClick(i.id!!)
+                            onDoctorClick(i)
                         },
                         doctor = i
                     )

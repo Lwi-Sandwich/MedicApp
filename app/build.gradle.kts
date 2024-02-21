@@ -88,6 +88,7 @@ dependencies {
 
     // Accompanist
     implementation("com.google.accompanist:accompanist-permissions:0.32.0")
+    implementation("com.google.android.gms:play-services-location:21.1.0")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
 
     // Coil

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -24,17 +25,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.startActivity
-import androidx.navigation.compose.rememberNavController
+import fr.medicapp.medicapp.model.Doctor
 import fr.medicapp.medicapp.ui.theme.EUGreen100
 import fr.medicapp.medicapp.ui.theme.EUGreen40
 import fr.medicapp.medicapp.ui.theme.EUPurple80
@@ -45,12 +46,14 @@ import fr.medicapp.medicapp.ui.theme.EURed110
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DoctorInfos() {
-    var darkmode : Boolean = isSystemInDarkTheme()
-    val context = LocalContext.current
-    val navController = rememberNavController()
-    var checkedState = remember { mutableStateOf(false) }
-    var phoneNumber = "0619384315"
+fun DoctorInfos(
+    docteur: Doctor,
+    onClose: () -> Unit = {},
+    onClickMail: (Doctor) -> Unit = {},
+    onDelete: (Doctor) -> Unit = {}
+) {
+    val darkmode : Boolean = isSystemInDarkTheme()
+    var showDialog by remember {mutableStateOf(false)}
 
     Scaffold(
         topBar = {
@@ -61,7 +64,7 @@ fun DoctorInfos() {
                 ),
                 title = {
                     Text(
-                        "Dr Jean-Marie MOTTU", // Mettre le nom du docteur ICI
+                        "Dr ${docteur.firstName.replaceFirstChar(Char::titlecase)} ${docteur.lastName.uppercase()}",
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -78,9 +81,7 @@ fun DoctorInfos() {
                         .weight(1f)
                 ) {
                     Button(
-                        onClick = {
-                            //onCancel()
-                        },
+                        onClick = onClose,
                         shape = RoundedCornerShape(20),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = EURed110,
@@ -124,7 +125,7 @@ fun DoctorInfos() {
                         .fillMaxWidth()
                         .padding(10.dp)
                 ) {
-                    Row() {
+                    Row {
                         Text(
                             "Numéro RPPS : ",
                             fontWeight = FontWeight.Bold,
@@ -133,7 +134,7 @@ fun DoctorInfos() {
                         )
 
                         Text(
-                            "111084843113",
+                            docteur.id,
                             color = Color.White,
                             fontSize = 16.sp
                         )
@@ -161,7 +162,7 @@ fun DoctorInfos() {
                         .fillMaxWidth()
                         .padding(10.dp)
                 ) {
-                    Row() {
+                    Row {
                         Text(
                             "Nom : ",
                             fontWeight = FontWeight.Bold,
@@ -170,12 +171,12 @@ fun DoctorInfos() {
                         )
 
                         Text(
-                            "MOTTU",
+                            docteur.lastName.uppercase(),
                             color = Color.White,
                             fontSize = 16.sp
                         )
                     }
-                    Row() {
+                    Row {
                         Text(
                             "Prénom : ",
                             fontWeight = FontWeight.Bold,
@@ -184,12 +185,12 @@ fun DoctorInfos() {
                         )
 
                         Text(
-                            "Jean-Marie",
+                            docteur.firstName.replaceFirstChar(Char::titlecase),
                             color = Color.White,
                             fontSize = 16.sp
                         )
                     }
-                    Row() {
+                    Row {
                         Text(
                             "Spécialité : ",
                             fontWeight = FontWeight.Bold,
@@ -198,7 +199,7 @@ fun DoctorInfos() {
                         )
 
                         Text(
-                            "Docteur en informatique",
+                            docteur.specialty,
                             color = Color.White,
                             fontSize = 16.sp
                         )
@@ -226,7 +227,7 @@ fun DoctorInfos() {
                         .fillMaxWidth()
                         .padding(10.dp)
                 ) {
-                    Row() {
+                    Row {
                         Text(
                             "Numéro de téléphone : ",
                             fontWeight = FontWeight.Bold,
@@ -235,12 +236,12 @@ fun DoctorInfos() {
                         )
 
                         Text(
-                            "01 23 45 67 89",
+                            docteur.phoneNumber,
                             color = Color.White,
                             fontSize = 16.sp
                         )
                     }
-                    Row() {
+                    Row {
                         Text(
                             "Email : ",
                             fontWeight = FontWeight.Bold,
@@ -249,7 +250,7 @@ fun DoctorInfos() {
                         )
 
                         Text(
-                            "jean-marie.mottu@univ-nantes.fr",
+                            docteur.email,
                             color = Color.White,
                             fontSize = 16.sp
                         )
@@ -277,7 +278,7 @@ fun DoctorInfos() {
                         .fillMaxWidth()
                         .padding(10.dp)
                 ) {
-                    Row() {
+                    Row {
                         Text(
                             "Code postal : ",
                             fontWeight = FontWeight.Bold,
@@ -286,12 +287,12 @@ fun DoctorInfos() {
                         )
 
                         Text(
-                            "44100",
+                            docteur.zipCode.toString(),
                             color = Color.White,
                             fontSize = 16.sp
                         )
                     }
-                    Row() {
+                    Row {
                         Text(
                             "Ville : ",
                             fontWeight = FontWeight.Bold,
@@ -300,12 +301,12 @@ fun DoctorInfos() {
                         )
 
                         Text(
-                            "Nantes",
+                            docteur.city.replaceFirstChar(Char::titlecase),
                             color = Color.White,
                             fontSize = 16.sp
                         )
                     }
-                    Row() {
+                    Row {
                         Text(
                             "Adresse : ",
                             fontWeight = FontWeight.Bold,
@@ -314,7 +315,7 @@ fun DoctorInfos() {
                         )
 
                         Text(
-                            "10 rue des Champs Elysées",
+                            docteur.address,
                             color = Color.White,
                             fontSize = 16.sp
                         )
@@ -326,7 +327,7 @@ fun DoctorInfos() {
 
             Button(
                 onClick = {
-                    //callNumber(LocalContext.current, phoneNumber) //TODO
+                    onClickMail(docteur)
                 },
                 shape = RoundedCornerShape(20),
                 colors = ButtonDefaults.buttonColors(
@@ -339,7 +340,30 @@ fun DoctorInfos() {
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "Appeler $phoneNumber",
+                    text = "Envoyer un mail",
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Button(
+                onClick = {
+                    showDialog = true
+                },
+                shape = RoundedCornerShape(20),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = EURed110,
+                    contentColor = Color.White,
+                    disabledContainerColor = EUGreen40,
+                    disabledContentColor = Color.White
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = "Supprimer ${docteur.firstName.replaceFirstChar(Char::titlecase)} ${docteur.lastName.uppercase()}",
                     fontSize = 15.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -348,16 +372,71 @@ fun DoctorInfos() {
             //
         }
     }
-}
-
-private fun callNumber(context : Context, phoneNumber: String) {
-    val intent = Intent(Intent.ACTION_DIAL)
-    intent.data = Uri.parse("tel:$phoneNumber")
-    context.startActivity(intent)
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        onDelete(docteur)
+                    },
+                    shape = RoundedCornerShape(20),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = EURed110,
+                        contentColor = Color.White
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Supprimer",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = { showDialog = false },
+                    shape = RoundedCornerShape(20),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = EUGreen100,
+                        contentColor = Color.White
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Annuler",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            },
+            title = {
+                Text(
+                    text = "Suppression",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Text(
+                    text = "Voulez-vous vraiment supprimer ${docteur.firstName.replaceFirstChar(Char::titlecase)} ${docteur.lastName.uppercase()} ?",
+                    fontSize = 16.sp
+                )
+            }
+        )
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun DoctorInfosPreview() {
-    DoctorInfos()
+    DoctorInfos(
+        Doctor(
+            "123456789", "Mottu", "Jean-Marie",
+            "+33 6 78 00 43 13", "jeanma.mockk@stub.dep",
+            "Testologue", 44000, "Nantes", "10 rue des pâtes au beurre",
+        ))
 }

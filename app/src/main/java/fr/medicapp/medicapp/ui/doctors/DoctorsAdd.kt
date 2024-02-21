@@ -15,8 +15,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.BottomAppBar
@@ -42,6 +44,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -52,6 +55,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
+import fr.medicapp.medicapp.model.Doctor
 import fr.medicapp.medicapp.ui.doctors.assets.DoctorCard
 import fr.medicapp.medicapp.ui.theme.EUGreen100
 import fr.medicapp.medicapp.ui.theme.EUGreen40
@@ -69,12 +73,19 @@ import fr.medicapp.medicapp.ui.theme.EUWhite100
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DoctorsAdd() {
-    var darkmode : Boolean = isSystemInDarkTheme()
-    val context = LocalContext.current
-    val navController = rememberNavController()
-    var name = remember { mutableStateOf("") }
-    var checkedState = remember { mutableStateOf(false) }
+fun DoctorsAdd(
+    doctorsList: List<Pair<Doctor, Int>> = listOf(),
+    onSearch: (String, Boolean) -> Unit = {_,_->},
+    onCheckDistance: (Boolean) -> Unit = {},
+    getDistance: (Doctor) -> Int = { 0 },
+    onCancel: () -> Unit = {},
+    onConfirm: (Doctor) -> Unit = {}
+) {
+
+    val doctorSelected = remember { mutableStateOf<Doctor?>(null) }
+    val darkmode : Boolean = isSystemInDarkTheme()
+    val name = remember { mutableStateOf("") }
+    val checkedState = remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -102,9 +113,7 @@ fun DoctorsAdd() {
                         .weight(1f)
                 ) {
                     Button(
-                        onClick = {
-                            //onCancel()
-                        },
+                        onClick = onCancel,
                         shape = RoundedCornerShape(20),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = EUOrange110,
@@ -124,12 +133,9 @@ fun DoctorsAdd() {
                     Spacer(modifier = Modifier.weight(0.3f))
 
                     Button(
+                        enabled = doctorSelected.value != null,
                         onClick = {
-                            /*if (nomMedicament != null && sideeffects.date != null && sideeffects.hour != null && sideeffects.minute != null && sideeffects.effetsConstates.size > 0 && sideeffects.effetsConstates.all { it != "" }) {
-                                onConfirm()
-                            } else {
-                                errorDialogOpen.value = true
-                            }*/
+                            doctorSelected.value?.let { onConfirm(it) }
                         },
                         shape = RoundedCornerShape(20),
                         colors = ButtonDefaults.buttonColors(
@@ -185,9 +191,11 @@ fun DoctorsAdd() {
 
                     OutlinedTextField(
                         value = name.value,
-                        textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
+                        singleLine = true,
+                        textStyle = TextStyle(fontSize = 16.sp, color = Color.White),
                         onValueChange = {
                             name.value = it
+                            doctorSelected.value = null
                         },
                         label = { Text("Nom du médecin") },
                         shape = RoundedCornerShape(20),
@@ -201,18 +209,20 @@ fun DoctorsAdd() {
                             disabledLabelColor = EUWhite100,
                             errorLabelColor = EURed60,
                         ),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.fillMaxWidth()
                     )
 
                     Row(
-                        horizontalArrangement = Arrangement.Center,
+                        horizontalArrangement = Arrangement.spacedBy(5.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.wrapContentWidth()
                     ) {
                         Checkbox(
                             checked = checkedState.value,
-                            onCheckedChange = { checkedState.value = it },
+                            onCheckedChange = {
+                                checkedState.value = it
+                                onCheckDistance(it)
+                            },
                             colors = CheckboxDefaults.colors(
                                 uncheckedColor = EUPurple20,
                                 checkedColor = EUPurple40,
@@ -226,6 +236,25 @@ fun DoctorsAdd() {
                             fontSize = 16.sp,
                             textAlign = TextAlign.End
                         )
+
+                        Button(
+                            onClick = {
+                                onSearch(name.value, checkedState.value)
+                                doctorSelected.value = null
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = EUGreen100,
+                                contentColor = Color.White
+                            ),
+                        ) {
+                            Text(
+                                "Rechercher",
+                                color = Color.White,
+                                fontSize = 16.sp,
+                                textAlign = TextAlign.End
+                            )
+
+                        }
                     }
                 }
             }
@@ -233,57 +262,71 @@ fun DoctorsAdd() {
             Spacer(modifier = Modifier.height(10.dp))
 
             // Début de la carte d'essai avec le docteur
-            ElevatedCard(
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 6.dp
-                ),
-                modifier = Modifier
-                    .fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = EUPurple60,
-                    contentColor = Color.Black
-                ),
-                shape = RoundedCornerShape(10.dp)
+            Column(
+                modifier = Modifier.verticalScroll(enabled=true, state=rememberScrollState())
             ) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(5.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
+                doctorsList.forEach { (doc, distance) ->
+                    ElevatedCard(
+                        elevation = CardDefaults.cardElevation(
+                            defaultElevation = 6.dp
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        colors = CardDefaults.cardColors(
+                            containerColor = if (doctorSelected.value?.id == doc.id) EUPurple80 else EUPurple60,
+                            contentColor = Color.Black
+                        ),
+                        shape = RoundedCornerShape(10.dp),
+                        onClick = {
+                            if (doctorSelected.value?.id == doc.id) {
+                                doctorSelected.value = null
+                            } else {
+                                doctorSelected.value = doc
+                            }
+                        }
                     ) {
                         Column(
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            verticalArrangement = Arrangement.spacedBy(5.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(10.dp)
                         ) {
-                            Text(
-                                "250",
-                                color = Color.White,
-                                fontSize = 15.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                "km",
-                                color = Color.White,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Bold
-                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Column(
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(
+                                        if (distance < 0) "?" else "$distance",
+                                        color = Color.White,
+                                        fontSize = 15.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        "km",
+                                        color = Color.White,
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+
+
+                                Spacer(modifier = Modifier.width(15.dp))
+
+                                Text(
+                                    "${doc.firstName.replaceFirstChar { it.uppercase() }} ${doc.lastName.uppercase()}",
+                                    color = Color.White,
+                                    fontSize = 16.sp
+                                )
+                            }
                         }
-
-
-                        Spacer(modifier = Modifier.width(15.dp))
-
-                        Text(
-                            "Docteur MEDECIN",
-                            color = Color.White,
-                            fontSize = 16.sp
-                        )
                     }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    // Fin de la carte
                 }
             }
-            // Fin de la carte
         }
     }
 }
