@@ -145,6 +145,14 @@ fun HomeScreen(
                         hour = "20h",
                         medication = "Médicament test 5"
                     )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    DayTreatment(
+                        enabled = true,
+                        hour = "22h",
+                        medication = "J'essaie de casser cette carte car c'est vraiment rigolo et qu'on aura forcément un médicament aussi long"
+                    )
                 }
             }
         }
