@@ -66,7 +66,6 @@ import fr.medicapp.medicapp.ui.prescription.TimePickerModal
 import fr.medicapp.medicapp.ui.theme.EUGreen100
 import fr.medicapp.medicapp.ui.theme.EUGreen40
 import fr.medicapp.medicapp.ui.theme.EUOrange110
-import fr.medicapp.medicapp.ui.theme.EURed100
 import fr.medicapp.medicapp.ui.theme.EUYellow100
 import fr.medicapp.medicapp.ui.theme.EUYellow110
 import fr.medicapp.medicapp.ui.theme.EUYellow120
@@ -237,7 +236,7 @@ fun NotificationsEdit(
 
                     if (treatmentOpen) {
                         SearchDialog(
-                            options = treatments.map { it.toOptionDialog() },
+                            options = treatments.map { it.toOptionDialog() }.toMutableList(),
                             cardColor = EUYellow40,
                             selectedCardColor = EUYellow100,
                             onDismiss = {

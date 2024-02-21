@@ -1,6 +1,8 @@
 package fr.medicapp.medicapp.ui.calendar.assets
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -41,6 +43,7 @@ import fr.medicapp.medicapp.ui.theme.EUGreen20
 import fr.medicapp.medicapp.ui.theme.EUGreen40
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MedicationCalendarCard(
     hour : String,
@@ -57,9 +60,12 @@ fun MedicationCalendarCard(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .clickable {
-                activeCard = !activeCard
-            },
+            .combinedClickable(
+                onClick = { },
+                onLongClick = {
+                    activeCard = !activeCard
+                }
+            ),
         colors =
         CardDefaults.cardColors(
             containerColor = EUGreen100,
@@ -95,12 +101,42 @@ fun MedicationCalendarCard(
             )
 
             if (painScale) {
-                var sliderValue by remember { mutableFloatStateOf(0f) }
+                var sliderValueBefore by remember { mutableFloatStateOf(0f) }
+                var sliderValueAfter by remember { mutableFloatStateOf(0f) }
+
+                Spacer(modifier = Modifier.height(5.dp))
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        "Avant",
+                        color = if (activeCard) Color.White else EUGreen40,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        fontStyle = if (activeCard) FontStyle.Normal else FontStyle.Italic
+                    )
+                    Text(
+                        " - Niveau de douleur ressenti : ",
+                        color = if (activeCard) Color.White else EUGreen40,
+                        fontSize = 16.sp,
+                        fontStyle = if (activeCard) FontStyle.Normal else FontStyle.Italic
+                    )
+                    Text(
+                        sliderValueBefore.toInt().toString(),
+                        fontWeight = FontWeight.Bold,
+                        color = if (activeCard) Color.White else EUGreen40,
+                        fontSize = 16.sp,
+                        fontStyle = if (activeCard) FontStyle.Normal else FontStyle.Italic
+                    )
+                }
 
                 if (activeCard) {
                     Slider(
-                        value = sliderValue,
-                        onValueChange = { sliderValue = it },
+                        value = sliderValueBefore,
+                        onValueChange = { sliderValueBefore = it },
                         valueRange = 0f..10f,
                         steps = 9,
                         colors = SliderDefaults.colors(
@@ -112,27 +148,47 @@ fun MedicationCalendarCard(
                     )
                 }
 
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        "Douleur ressentie : ",
+                        "Après",
+                        color = if (activeCard) Color.White else EUGreen40,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        fontStyle = if (activeCard) FontStyle.Normal else FontStyle.Italic
+                    )
+                    Text(
+                        " - Niveau de douleur ressenti : ",
                         color = if (activeCard) Color.White else EUGreen40,
                         fontSize = 16.sp,
                         fontStyle = if (activeCard) FontStyle.Normal else FontStyle.Italic
                     )
                     Text(
-                        sliderValue.toInt().toString(),
+                        sliderValueAfter.toInt().toString(),
                         fontWeight = FontWeight.Bold,
                         color = if (activeCard) Color.White else EUGreen40,
                         fontSize = 16.sp,
                         fontStyle = if (activeCard) FontStyle.Normal else FontStyle.Italic
                     )
                 }
-                Spacer(modifier = Modifier.height(5.dp))
+
+                if (activeCard) {
+                    Slider(
+                        value = sliderValueAfter,
+                        onValueChange = { sliderValueAfter = it },
+                        valueRange = 0f..10f,
+                        steps = 9,
+                        colors = SliderDefaults.colors(
+                            thumbColor = EUGreen140,
+                            activeTrackColor = EUGreen140,
+                            inactiveTrackColor = EUGreen20,
+                        ),
+                        modifier = Modifier.padding(start = 10.dp, end = 10.dp)
+                    )
+                }
             }
         }
     }
