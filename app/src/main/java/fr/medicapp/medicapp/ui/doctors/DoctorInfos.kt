@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -24,6 +25,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -45,8 +50,10 @@ fun DoctorInfos(
     docteur: Doctor,
     onClose: () -> Unit = {},
     onClickMail: (Doctor) -> Unit = {},
+    onDelete: (Doctor) -> Unit = {}
 ) {
     val darkmode : Boolean = isSystemInDarkTheme()
+    var showDialog by remember {mutableStateOf(false)}
 
     Scaffold(
         topBar = {
@@ -339,8 +346,87 @@ fun DoctorInfos(
                 )
             }
 
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Button(
+                onClick = {
+                    showDialog = true
+                },
+                shape = RoundedCornerShape(20),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = EURed110,
+                    contentColor = Color.White,
+                    disabledContainerColor = EUGreen40,
+                    disabledContentColor = Color.White
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = "Supprimer ${docteur.firstName.replaceFirstChar(Char::titlecase)} ${docteur.lastName.uppercase()}",
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
             //
         }
+    }
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        onDelete(docteur)
+                    },
+                    shape = RoundedCornerShape(20),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = EURed110,
+                        contentColor = Color.White
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Supprimer",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = { showDialog = false },
+                    shape = RoundedCornerShape(20),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = EUGreen100,
+                        contentColor = Color.White
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Annuler",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            },
+            title = {
+                Text(
+                    text = "Suppression",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Text(
+                    text = "Voulez-vous vraiment supprimer ${docteur.firstName.replaceFirstChar(Char::titlecase)} ${docteur.lastName.uppercase()} ?",
+                    fontSize = 16.sp
+                )
+            }
+        )
     }
 }
 
@@ -349,7 +435,7 @@ fun DoctorInfos(
 fun DoctorInfosPreview() {
     DoctorInfos(
         Doctor(
-            "123456789", "Jean-Marie", "MOTTU",
+            "123456789", "Mottu", "Jean-Marie",
             "+33 6 78 00 43 13", "jeanma.mockk@stub.dep",
             "Testologue", 44000, "Nantes", "10 rue des pâtes au beurre",
         ))

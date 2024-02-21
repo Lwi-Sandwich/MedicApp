@@ -19,6 +19,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import fr.medicapp.medicapp.api.Apizza
 import fr.medicapp.medicapp.database.AppDatabase
 import fr.medicapp.medicapp.entity.DoctorEntity
 import fr.medicapp.medicapp.model.Doctor
@@ -63,11 +64,40 @@ fun NavGraphBuilder.doctorsNavGraph(navController: NavHostController) {
         }
 
         composable(route = DoctorsRoute.Add.route) {
-            val list = mutableListOf<Pair<Doctor, Int>>()
+            val api = Apizza.getInstance()
+            val viewModel = it.sharedViewModel<SharedDoctorViewModel>(navController = navController)
+            val state by viewModel.sharedStateList.collectAsStateWithLifecycle()
+            val db = AppDatabase.getInstance(LocalContext.current)
+            val repoDoc = DoctorRepository(db.doctorDAO())
 
             DoctorsAdd(
-
+                doctorsList = state,
+                onSearch = {
+                    Thread {
+                       viewModel.getDoctorsByName(api, it)
+                    }.start()
+                },
                 onCancel = {navController.navigate(DoctorsRoute.Main.route)},
+                onConfirm = {
+                    Thread {
+                        try {
+                            repoDoc.add(
+                                DoctorEntity(
+                                    it.id,
+                                    it.lastName,
+                                    it.firstName,
+                                    it.phoneNumber,
+                                    it.email,
+                                    it.specialty,
+                                    it.zipCode,
+                                    it.city,
+                                    it.address
+                                )
+                            )
+                        } catch (_: Exception) { }
+                    }.start()
+                    navController.navigate(DoctorsRoute.Main.route)
+                }
             )
         }
 
@@ -91,6 +121,25 @@ fun NavGraphBuilder.doctorsNavGraph(navController: NavHostController) {
                         Intent.ACTION_SENDTO,
                         Uri.parse("mailto:${it.email}"))
                     startActivity(context, intent, null)
+                },
+                onDelete = {
+                    Thread {
+                        try {
+                            repoDoc.delete(DoctorEntity(
+                                it.id,
+                                it.lastName,
+                                it.firstName,
+                                it.phoneNumber,
+                                it.email,
+                                it.specialty,
+                                it.zipCode,
+                                it.city,
+                                it.address))
+                        } catch (_: Exception) { }
+                        MainScope().launch {
+                            navController.navigate(DoctorsRoute.Main.route)
+                        }
+                    }.start()
                 }
             )
         }
