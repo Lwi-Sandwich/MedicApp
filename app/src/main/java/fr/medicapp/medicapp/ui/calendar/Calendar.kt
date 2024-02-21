@@ -2,6 +2,7 @@ package fr.medicapp.medicapp.ui.calendar
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,7 +13,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Medication
@@ -30,6 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,11 +50,14 @@ import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
 import com.kizitonwose.calendar.core.atStartOfMonth
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import fr.medicapp.medicapp.ui.calendar.assets.Day
+import fr.medicapp.medicapp.ui.calendar.assets.MedicationCalendarCard
 import fr.medicapp.medicapp.ui.theme.EUGreen100
 import fr.medicapp.medicapp.ui.theme.EUGreen120
 import fr.medicapp.medicapp.ui.theme.EUGreen20
 import fr.medicapp.medicapp.ui.theme.EUGreen80
 import fr.medicapp.medicapp.ui.theme.EUYellow110
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
@@ -100,11 +107,13 @@ fun Calendar(
                 firstDayOfWeek = firstDayOfWeek
             )
 
+            var coroutine = rememberCoroutineScope()
             monthSelection = state.firstVisibleWeek.days.first().date.month
             yearSelection = state.firstVisibleWeek.days.first().date.year
 
             Box(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -112,7 +121,14 @@ fun Calendar(
                         .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }} $yearSelection",
                     fontWeight = FontWeight.Bold,
                     fontSize = 22.sp,
-                    color = EUGreen120
+                    color = EUGreen120,
+                    modifier = Modifier
+                        .clickable {
+                            coroutine.launch {
+                                selection = currentDate
+                                state.animateScrollToWeek(currentDate)
+                            }
+                        }
                 )
             }
 
@@ -125,28 +141,6 @@ fun Calendar(
                 textAlign = TextAlign.Center
             )*/
 
-            WeekCalendar(
-                modifier = Modifier
-                    .drawBehind {
-                        drawRoundRect(
-                            EUGreen20,
-                            cornerRadius = CornerRadius(10.dp.toPx())
-                        )
-                    }
-                ,
-                state = state,
-                dayContent = { day -> Day(day.date, isSelected = selection == day.date) { clicked ->
-                        if (selection != clicked) {
-                            selection = clicked
-                        }
-                    }
-                }
-            ) {
-
-            }
-
-            Spacer(modifier = Modifier.height(15.dp))
-
             ElevatedCard(
                 elevation = CardDefaults.cardElevation(
                     defaultElevation = 6.dp
@@ -156,33 +150,94 @@ fun Calendar(
                     .wrapContentHeight(),
                 colors =
                 CardDefaults.cardColors(
-                    containerColor = EUGreen100,
-                    contentColor = Color.White
+                    containerColor = EUGreen100
                 ),
                 shape = RoundedCornerShape(10.dp)
             ) {
-                Column(
-                    modifier = Modifier.padding(5.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Medication,
-                            contentDescription = "",
-                            tint = Color.White
-                        )
-                        Text("Médicament exemple",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 15.sp
-                        )
+                WeekCalendar(
+                    /*modifier = Modifier
+                        .drawBehind {
+                            drawRoundRect(
+                                EUGreen20,
+                                cornerRadius = CornerRadius(10.dp.toPx())
+                            )
+                        }
+                    ,*/
+                    state = state,
+                    dayContent = { day ->
+                        Day(day.date, isSelected = selection == day.date, medicationNumber = 0) { clicked ->
+                            if (selection != clicked) {
+                                selection = clicked
+                            }
+                        }
                     }
-                    Text("10h00",
-                        fontSize = 15.sp
-                    )
+                ) {
                 }
-
             }
+
+            Spacer(modifier = Modifier.height(15.dp))
+
+            Column(
+                modifier = Modifier
+                    .verticalScroll(
+                        enabled = true,
+                        state = rememberScrollState()
+                    )
+            ) {
+                MedicationCalendarCard(
+                    "10h00",
+                    "Médicament exemple",
+                    painScale = true,
+                    active = true
+                )
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                MedicationCalendarCard(
+                    "11h00",
+                    "Médicament exemple",
+                    painScale = true,
+                    active = false
+                )
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                MedicationCalendarCard(
+                    "12h00",
+                    "Médicament exemple",
+                    painScale = false,
+                    active = true
+                )
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                MedicationCalendarCard(
+                    "13h00",
+                    "Médicament exemple",
+                    painScale = false,
+                    active = false
+                )
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                MedicationCalendarCard(
+                    "14h00",
+                    "Médicament exemple",
+                    painScale = true,
+                    active = true
+                )
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                MedicationCalendarCard(
+                    "15h00",
+                    "Médicament exemple",
+                    painScale = true,
+                    active = false
+                )
+            }
+
+
         }
     }
 }

@@ -8,19 +8,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import fr.medicapp.medicapp.ui.home.assets.DayTreatment
 import fr.medicapp.medicapp.ui.theme.EUGreen100
 import fr.medicapp.medicapp.ui.theme.EUGreen120
 
@@ -56,7 +61,7 @@ fun HomeScreen(
                 fontSize = 20.sp
             )
             Text(
-                text = "John Doe",
+                text = "Quentin Tegny",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = EUGreen120
@@ -71,7 +76,7 @@ fun HomeScreen(
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(height = 500.dp),
+                .height(300.dp),
             colors = CardDefaults.cardColors(
                 containerColor = EUGreen120,
                 contentColor = Color.White
@@ -80,18 +85,80 @@ fun HomeScreen(
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(10.dp),
+                    .padding(10.dp)
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Vos traitements du jour :",
+                    text = "Traitements du jour",
                     fontWeight = FontWeight.Bold,
-                    fontSize = 15.sp
+                    fontSize = 17.sp,
+                    textAlign = TextAlign.Center
                 )
-                //TODO
-                // Mettre des cartes de traitement
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(
+                            enabled = true,
+                            state = rememberScrollState()
+                        )
+                ) {
+                    //TODO
+                    // Mettre des cartes de traitement
+
+                    DayTreatment(
+                        enabled = false,
+                        hour = "14h",
+                        medication = "Médicament test 1"
+                    )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    DayTreatment(
+                        enabled = false,
+                        hour = "15h",
+                        medication = "Médicament test 2"
+                    )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    DayTreatment(
+                        enabled = true,
+                        hour = "16h",
+                        medication = "Médicament test 3"
+                    )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    DayTreatment(
+                        enabled = true,
+                        hour = "18h",
+                        medication = "Médicament test 4"
+                    )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    DayTreatment(
+                        enabled = true,
+                        hour = "20h",
+                        medication = "Médicament test 5"
+                    )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    DayTreatment(
+                        enabled = true,
+                        hour = "22h",
+                        medication = "J'essaie de casser cette carte car c'est vraiment rigolo et qu'on aura forcément un médicament aussi long"
+                    )
+                }
             }
         }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
         Button(
             onClick = onAddPrescriptionClick,
             modifier = Modifier
@@ -104,6 +171,7 @@ fun HomeScreen(
         ) {
             Text(text = "Ajouter une ordonnance")
         }
+
         Button(
             onClick = onAddSideEffectClick,
             modifier = Modifier
@@ -116,6 +184,7 @@ fun HomeScreen(
         ) {
             Text(text = "Signaler un effet indésirable")
         }
+
         Button(
             onClick = {
                 onAddNotification()

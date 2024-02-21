@@ -16,13 +16,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.HourglassTop
 import androidx.compose.material.icons.filled.Medication
@@ -32,20 +28,17 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -73,8 +66,6 @@ import fr.medicapp.medicapp.ui.prescription.SearchDialog
 import fr.medicapp.medicapp.ui.theme.EUBlack100
 import fr.medicapp.medicapp.ui.theme.EUBlue100
 import fr.medicapp.medicapp.ui.theme.EUGreen100
-import fr.medicapp.medicapp.ui.theme.EUGrey10
-import fr.medicapp.medicapp.ui.theme.EUGrey100
 import fr.medicapp.medicapp.ui.theme.EUOrange100
 import fr.medicapp.medicapp.ui.theme.EUPurple100
 import fr.medicapp.medicapp.ui.theme.EUPurple20
@@ -82,7 +73,6 @@ import fr.medicapp.medicapp.ui.theme.EUPurple60
 import fr.medicapp.medicapp.ui.theme.EUPurple80
 import fr.medicapp.medicapp.ui.theme.EURed100
 import fr.medicapp.medicapp.ui.theme.EURed60
-import org.w3c.dom.Text
 import java.time.LocalDate
 
 /**
@@ -143,7 +133,7 @@ fun TreatmentCard(
 
                 if (medicationOpen) {
                     SearchDialog(
-                        options = medications.map { it.toOptionDialog() },
+                        options = medications.map { it.toOptionDialog() }.toMutableList(),
                         cardColor = EUPurple20,
                         selectedCardColor = EUPurple80,
                         onDismiss = {
@@ -372,8 +362,8 @@ fun TreatmentCard(
                     val numbers = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
                     val units = listOf(
                         "fois",
-                        "comprimé",
-                        "gélule"
+                        "comprimés",
+                        "gélules"
                     ) // Ajouter d'autres options au besoin
                     val periodicities = listOf("jour", "semaine", "mois")
 
@@ -394,21 +384,6 @@ fun TreatmentCard(
                             text = {
                                     Spacer(modifier = Modifier.width(5.dp))
 
-                                    var durationOpen by remember { mutableStateOf(false) }
-
-                                    if (durationOpen) {
-                                        CalendarDialog(
-                                            state = rememberUseCaseState(true, onCloseRequest = {
-                                                durationOpen = false
-                                            }),
-                                            selection = CalendarSelection.Period { startDate, endDate ->
-                                                treatment.duration = Duration(startDate, endDate)
-                                                duration.value = treatment.duration.toString()
-                                                durationOpen = false
-                                            },
-                                        )
-                                    }
-
                                     Column() {
                                         Row {
                                             ExposedDropdownMenuBox(
@@ -416,7 +391,7 @@ fun TreatmentCard(
                                                 onExpandedChange = {
                                                     isDropDownMenuNumbersOpen = !isDropDownMenuNumbersOpen
                                                 },
-                                                modifier = Modifier.weight(1f)
+                                                modifier = Modifier.weight(0.5f)
                                             ) {
                                                 TextField(
                                                     modifier = Modifier.menuAnchor(),
@@ -583,7 +558,11 @@ fun TreatmentCard(
                                         showDialog = false
                                         posology.value = "$selectedNumber $selectedUnits par $selectedPeriodicities"
                                         treatment.posology = posology.value
-                                    }
+                                    },
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = EUPurple60,
+                                        contentColor = Color.White,
+                                    ),
                                 ) {
                                     Text(text = "Confirmer")
                                 }
@@ -593,7 +572,11 @@ fun TreatmentCard(
                                     onClick = {
                                         // Actions à effectuer lors du rejet
                                         showDialog = false
-                                    }
+                                    },
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = EUPurple60,
+                                        contentColor = Color.White,
+                                    ),
                                 ) {
                                     Text(text = "Retour")
                                 }
@@ -634,6 +617,7 @@ fun TreatmentCard(
 
                         OutlinedTextField(
                             value = renew.value,
+                            singleLine = true,
                             textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
                             onValueChange = {
                                 renew.value = it
@@ -652,7 +636,8 @@ fun TreatmentCard(
                                 errorLabelColor = EURed60,
                             ),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
+                            suffix = { Text("fois") }
                         )
                     }
                 }
@@ -684,6 +669,7 @@ fun TreatmentCard(
                     Spacer(modifier = Modifier.width(5.dp))
                     OutlinedTextField(
                         value = quantity.value,
+                        singleLine = true,
                         textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
                         onValueChange = {
                             quantity.value = it
@@ -702,7 +688,8 @@ fun TreatmentCard(
                             errorLabelColor = EURed60,
                         ),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        suffix = { Text("fois") }
                     )
                 }
             }

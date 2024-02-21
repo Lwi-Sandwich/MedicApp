@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Alarm
@@ -51,13 +53,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import fr.medicapp.medicapp.entity.TreatmentEntity
+import fr.medicapp.medicapp.model.OptionDialog
 import fr.medicapp.medicapp.model.SideEffect
 import fr.medicapp.medicapp.model.Treatment
 import fr.medicapp.medicapp.ui.prescription.DatePickerModal
 import fr.medicapp.medicapp.ui.prescription.EditPrescription.AddButton
 import fr.medicapp.medicapp.ui.prescription.SearchDialog
 import fr.medicapp.medicapp.ui.prescription.TimePickerModal
+import fr.medicapp.medicapp.ui.sideeffectsdiary.SEDEdit.SearchDialogWithOption
 import fr.medicapp.medicapp.ui.theme.EUGreen100
 import fr.medicapp.medicapp.ui.theme.EUGreen40
 import fr.medicapp.medicapp.ui.theme.EUOrange110
@@ -67,6 +70,7 @@ import fr.medicapp.medicapp.ui.theme.EURed40
 import fr.medicapp.medicapp.ui.theme.EURed60
 import fr.medicapp.medicapp.ui.theme.EURed80
 import java.time.Instant
+import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
@@ -125,7 +129,7 @@ fun SEDEdit(
                 ),
                 title = {
                     Text(
-                        "Journal des effets",
+                        "Ajouter un nouvel effet",
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -197,6 +201,10 @@ fun SEDEdit(
             modifier = Modifier
                 .padding(innerPadding)
                 .padding(10.dp)
+                .verticalScroll(
+                    enabled = true,
+                    state = rememberScrollState()
+                )
         ) {
             ElevatedCard(
                 onClick = { },
@@ -221,7 +229,7 @@ fun SEDEdit(
 
                     if (treatmentOpen) {
                         SearchDialog(
-                            options = treatments.map { it.toOptionDialog() },
+                            options = treatments.map { it.toOptionDialog() }.toMutableList(),
                             cardColor = EURed20,
                             selectedCardColor = EURed80,
                             onDismiss = {
@@ -415,7 +423,7 @@ fun SEDEdit(
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(height = 115.dp + (sideeffects.effetsConstates.size * 63 + sideeffects.effetsConstates.size).dp),
+                    .wrapContentHeight(),
                 colors =
                 CardDefaults.cardColors(
                     containerColor = EURed80,
@@ -437,20 +445,60 @@ fun SEDEdit(
 
                     for (i in 0 until sideeffects.effetsConstates.size) {
                         var effetsConstates = remember { mutableStateOf(sideeffects.effetsConstates[i]) }
+                        var sideEffectsOpen by remember { mutableStateOf(false) }
+                        var listeEffets : MutableList<String> = mutableListOf(
+                            "Mal de tête",
+                            "Mal de ventre",
+                            "Ballonnement",
+                            "Vomissements",
+                            "Nausées",
+                            "Diarrhée",
+                            "Constipation",
+                            "Fatigue",
+                            "Somnolence",
+                            "Insomnie",
+                            "Réaction allergique",
+                            "Brûlures d'estomac",
+                            "Sécheresse de la bouche",
+                            "Sécheresse du nez",
+                            "Sensibilité au soleil"
+                        )
+                        // TODO
+                        //A déplacer dans une liste sauvegardée en base
+
+                        if (sideEffectsOpen) {
+                            SearchDialogWithOption(
+                                title = "Qu'avez vous ressenti ?",
+                                options = listeEffets.map {
+                                    OptionDialog(id = it, title = it)
+                                }.toMutableList(),
+                                cardColor = EURed40,
+                                selectedCardColor = EURed100,
+                                onDismiss = {
+                                    sideEffectsOpen = false
+                                },
+                                onValidate = { option ->
+                                    effetsConstates.value = option.title
+                                    sideeffects.effetsConstates[i] = option.title
+                                    sideEffectsOpen = false
+                                }
+                            )
+                        }
 
                         LaunchedEffect(sideeffects.effetsConstates[i]) {
                             effetsConstates.value = sideeffects.effetsConstates[i]
                         }
 
                         OutlinedTextField(
+                            enabled = false,
                             value = effetsConstates.value,
                             textStyle = TextStyle(
                                 fontSize = 16.sp,
                                 color = Color.White
                             ),
                             onValueChange = {
-                                effetsConstates.value = it
-                                sideeffects.effetsConstates[i] = it
+                                /*effetsConstates.value = it
+                                sideeffects.effetsConstates[i] = effetsConstates.value*/
                             },
                             shape = RoundedCornerShape(20),
                             trailingIcon = {
@@ -467,8 +515,14 @@ fun SEDEdit(
                                 unfocusedLabelColor = Color.White,
                                 focusedBorderColor = Color.White,
                                 unfocusedBorderColor = Color.White,
+                                disabledBorderColor = Color.White,
+                                disabledLabelColor = Color.White
                             ),
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    sideEffectsOpen = true
+                                }
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                     }
