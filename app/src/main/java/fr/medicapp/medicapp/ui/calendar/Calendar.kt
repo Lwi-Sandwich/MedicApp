@@ -198,7 +198,7 @@ fun Calendar(
                 Spacer(modifier = Modifier.height(15.dp))
 
                 MedicationCalendarCard(
-                    notifications.toString(),
+                    treatmentOfTheDay(treatments,notifications, LocalDate.now().plusDays(5)).toString(),
                     "Médicament exemple",
                     painScale = true,
                     active = false
