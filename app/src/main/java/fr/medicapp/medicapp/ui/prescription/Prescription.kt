@@ -35,6 +35,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -47,6 +49,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,6 +59,7 @@ import fr.medicapp.medicapp.ui.theme.EUBlue100
 import fr.medicapp.medicapp.ui.theme.EUGreen100
 import fr.medicapp.medicapp.ui.theme.EUGreen40
 import fr.medicapp.medicapp.ui.theme.EUOrange100
+import fr.medicapp.medicapp.ui.theme.EUOrange110
 import fr.medicapp.medicapp.ui.theme.EUPurple20
 import fr.medicapp.medicapp.ui.theme.EUPurple80
 import fr.medicapp.medicapp.ui.theme.EURed100
@@ -96,7 +100,7 @@ fun Prescription(
                         },
                         shape = RoundedCornerShape(20),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = EURed100,
+                            containerColor = EUOrange110,
                             contentColor = Color.White
                         ),
                         modifier = Modifier
@@ -104,7 +108,7 @@ fun Prescription(
                             .weight(3f)
                     ) {
                         Text(
-                            text = "Annuler",
+                            text = "Retour",
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -147,13 +151,20 @@ fun Prescription(
                 .fillMaxSize()
                 .padding(10.dp)
         ) {
-            Spacer(modifier = Modifier.height(15.dp))
-
             // Itération de la liste des médicaments
             for (i in consultation) {
                 var notification = remember {
                     mutableStateOf(i.notification)
                 }
+                Text(
+                    i.medication?.name ?: "",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(5.dp)
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
 
                 ElevatedCard(
                     elevation = CardDefaults.cardElevation(
@@ -177,12 +188,6 @@ fun Prescription(
                             .fillMaxSize()
                             .padding(10.dp)
                     ) {
-                        Text(
-                            i.medication?.name ?: "",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-
                         Row(
                             modifier = Modifier.fillMaxWidth()
                         ) {
@@ -208,12 +213,38 @@ fun Prescription(
                                     .padding(top = 10.dp)
                             ) {
                                 Text(
-                                    "Notification de rappel ${ if (i.notification) "activée" else "désactivée" }",
+                                    "Notification de rappel ${if (i.notification) "activée" else "désactivée"}",
                                     fontSize = 18.sp
                                 )
                             }
                         }
+                    }
+                }
 
+                Spacer(modifier = Modifier.height(15.dp))
+
+                ElevatedCard(
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 6.dp
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = EUPurple20,
+                        contentColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(5.dp),
+                        modifier = Modifier
+                            .verticalScroll(
+                                enabled = true,
+                                state = rememberScrollState()
+                            )
+                            .fillMaxSize()
+                            .padding(10.dp)
+                    ) {
                         Row() {
                             Box(
                                 modifier = Modifier
@@ -227,6 +258,11 @@ fun Prescription(
                                 )
                             }
                             Spacer(modifier = Modifier.width(5.dp))
+                            Text(
+                                "Posologie : ",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold
+                            )
                             Text(
                                 i.posology,
                                 fontSize = 18.sp
@@ -279,11 +315,9 @@ fun Prescription(
                                     fontSize = 18.sp
                                 )
                             }
-                            Spacer(modifier = Modifier.width(5.dp))
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(20.dp))
             }
         }
     }

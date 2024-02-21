@@ -14,7 +14,7 @@ data class Doctor(
     /**
      * L'identifiant unique du docteur.
      */
-    val id: String? = null,
+    val id: String,
 
     /**
      * Le nom de famille du docteur.
@@ -24,7 +24,37 @@ data class Doctor(
     /**
      * Le prénom du docteur.
      */
-    var firstName: String,
+    val firstName: String,
+
+    /**
+     * Le numéro de téléphone du docteur.
+     */
+    val phoneNumber: String = "",
+
+    /**
+     * L'adresse email du docteur.
+     */
+    val email: String = "",
+
+    /**
+     * La spécialité du docteur.
+     */
+    val specialty: String = "",
+
+    /**
+     * Le code postal du docteur.
+     */
+    val zipCode: Int = 0,
+
+    /**
+     * La ville du docteur.
+     */
+    val city: String = "",
+
+    /**
+     * L'adresse du docteur.
+     */
+    val address: String = ""
 ) {
 
     /**
@@ -45,13 +75,27 @@ data class Doctor(
         return getFullName()
     }
 
+    private fun estStringValide(champ: String): Boolean {
+        return champ.isNotBlank() && champ != "null"
+    }
+
     /**
      * Vérifie si le docteur est valide.
      *
      * @return `true` si le docteur est valide, `false` sinon.
      */
-    fun isValide(): Boolean {
-        return lastName.isNotEmpty() && firstName.isNotEmpty()
+    fun isValid(): Boolean {
+        return listOf(
+            id,
+            lastName,
+            firstName,
+            email,
+            phoneNumber,
+            specialty,
+            zipCode.toString(),
+            city,
+            address
+        ).all { estStringValide(it) }
     }
 
     /**

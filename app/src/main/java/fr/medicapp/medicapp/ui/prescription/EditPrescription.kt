@@ -50,6 +50,8 @@ import fr.medicapp.medicapp.ui.theme.EUGreen40
 import fr.medicapp.medicapp.ui.theme.EUPurple80
 import fr.medicapp.medicapp.ui.theme.EURed100
 import java.time.LocalDate
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalContext
 
 /**
  * Cette fonction affiche l'écran d'édition de prescription avec des informations spécifiques.
@@ -260,8 +262,8 @@ fun EditPrescription(
     }
 }
 
-@OptIn(ExperimentalPermissionsApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
+@OptIn(ExperimentalPermissionsApi::class)
 @Preview(showBackground = true)
 @Composable
 private fun EditPrescriptionPreview() {
@@ -269,16 +271,19 @@ private fun EditPrescriptionPreview() {
         prescription = Prescription(),
         doctors = listOf(
             Doctor(
+                id = "1",
                 firstName = "Jean",
-                lastName = "Dupont"
+                lastName = "Dupont",
             ),
             Doctor(
+                id = "2",
                 firstName = "John",
-                lastName = "Dupont"
+                lastName = "Dupont",
             ),
             Doctor(
+                id = "3",
                 firstName = "Mark",
-                lastName = "Dupont"
+                lastName = "Dupont",
             ),
         ),
         onCancel = {},

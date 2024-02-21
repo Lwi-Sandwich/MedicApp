@@ -50,7 +50,6 @@ import kotlinx.coroutines.launch
  *
  * @param navController Le contrôleur de navigation pour naviguer entre les différents écrans.
  */
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavigationDrawerScreen(navController: NavHostController = rememberNavController()) {
@@ -59,7 +58,9 @@ fun NavigationDrawerScreen(navController: NavHostController = rememberNavControl
 
     val screens = listOf(
         NavigationDrawerRoute.Home,
+        NavigationDrawerRoute.Calendrier,
         NavigationDrawerRoute.Prescriptions,
+        NavigationDrawerRoute.Docteurs,
         NavigationDrawerRoute.Messages,
         NavigationDrawerRoute.Notifications
     )
@@ -162,7 +163,6 @@ fun NavigationDrawerScreen(navController: NavHostController = rememberNavControl
  *
  * Cette prévisualisation permet de voir à quoi ressemble l'écran avec tiroir de navigation sans avoir à lancer l'application.
  */
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 private fun NavigationDrawerScreenPreview() {

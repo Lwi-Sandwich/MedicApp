@@ -27,11 +27,18 @@
 6. Run the project on an emulator or a real device.
 
 ## Authors
+### Projet d'origine 
 * Antonin Rouxel ([anrouxel](https://github.com/anrouxel))
 * Quentin Tegny ([Qt144](https://github.com/Qt144))
 * Paul Boutet ([Kartinlage](https://github.com/Kartinlage))
 * Arthur Osselin ([tuturita](https://github.com/tuturita))
 * Lana Heyrendt ([Renarde-dev](https://github.com/Renarde-dev))
+
+### Nouvelle version
+* Louis Bruneteau ([Lwi-Sandwich](https://github.com/Lwi-Sandwich))
+* Quentin Tegny ([Qt144](https://github.com/Qt144))
+* Alexandre Traineau ([AlexworlD31](https://github.com/AlexworlD31))
+* Mathis Cottier ([MathisCottier](https://github.com/MathisCottier))
 
 ## Related Git repository
 * Android application: [MedicApp](https://github.com/anrouxel/MedicApp#----)

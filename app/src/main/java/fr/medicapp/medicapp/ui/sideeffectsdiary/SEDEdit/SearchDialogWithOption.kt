@@ -1,4 +1,4 @@
-package fr.medicapp.medicapp.ui.prescription
+package fr.medicapp.medicapp.ui.sideeffectsdiary.SEDEdit
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -45,7 +45,8 @@ import fr.medicapp.medicapp.model.OptionDialog
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchDialog(
+fun SearchDialogWithOption(
+    title : String,
     options: MutableList<OptionDialog>,
     cardColor : Color,
     selectedCardColor : Color,
@@ -62,7 +63,7 @@ fun SearchDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Choisissez un médicament") },
+        title = { Text(title) },
         text = {
             Column(
             ) {
@@ -72,10 +73,45 @@ fun SearchDialog(
                     label = { Text("Recherche") }
                 )
 
-                Spacer(modifier = Modifier.height(15.dp))
+                Spacer(modifier = Modifier.height(5.dp))
 
-                LazyColumn {
-                    items(filteredOptions) { option ->
+                OutlinedTextField(
+                    value = addOptionText,
+                    onValueChange = {
+                        addOptionText = it
+                    },
+                    trailingIcon = {
+                        IconButton(
+                            onClick = {
+                                options.add(OptionDialog(addOptionText, addOptionText))
+                                addOptionText = ""
+                                // Pour refresh la liste
+                                searchQuery = "a"
+                                searchQuery = ""
+
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Add,
+                                contentDescription = "",
+                                tint = Color.Black
+                            )
+                        }
+                    },
+                    label = { Text("Ajouter un effet") }
+                )
+
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(
+                            enabled = true,
+                            state = rememberScrollState()
+                        )
+                ) {
+                    filteredOptions.forEach { option ->
                         ElevatedCard(
                             onClick = {
                                 selectedOption = option
@@ -123,8 +159,8 @@ fun SearchDialog(
                     contentColor = Color.White,
                 ),
                 onClick = {
-                selectedOption?.let(onValidate)
-            }) {
+                    selectedOption?.let(onValidate)
+                }) {
                 Text("Valider")
             }
         }
