@@ -43,7 +43,8 @@ import fr.medicapp.medicapp.ui.theme.EURed110
 @Composable
 fun DoctorInfos(
     docteur: Doctor,
-    onClose: () -> Unit = {}
+    onClose: () -> Unit = {},
+    onClickMail: (Doctor) -> Unit = {},
 ) {
     val darkmode : Boolean = isSystemInDarkTheme()
 
@@ -319,7 +320,7 @@ fun DoctorInfos(
 
             Button(
                 onClick = {
-                    //callNumber(LocalContext.current, phoneNumber) //TODO
+                    onClickMail(docteur)
                 },
                 shape = RoundedCornerShape(20),
                 colors = ButtonDefaults.buttonColors(
@@ -332,7 +333,7 @@ fun DoctorInfos(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "Appeler ${docteur.phoneNumber}",
+                    text = "Envoyer un mail",
                     fontSize = 15.sp,
                     fontWeight = FontWeight.Bold
                 )

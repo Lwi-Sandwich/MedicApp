@@ -52,6 +52,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
+import fr.medicapp.medicapp.model.Doctor
 import fr.medicapp.medicapp.ui.doctors.assets.DoctorCard
 import fr.medicapp.medicapp.ui.theme.EUGreen100
 import fr.medicapp.medicapp.ui.theme.EUGreen40
@@ -69,7 +70,12 @@ import fr.medicapp.medicapp.ui.theme.EUWhite100
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DoctorsAdd() {
+fun DoctorsAdd(
+    doctorsList: MutableList<Pair<Doctor, Int>> = mutableListOf(),
+    onSearch: (String) -> Unit = {},
+    onCancel: () -> Unit = {},
+) {
+
     var darkmode : Boolean = isSystemInDarkTheme()
     val context = LocalContext.current
     val navController = rememberNavController()
@@ -102,9 +108,7 @@ fun DoctorsAdd() {
                         .weight(1f)
                 ) {
                     Button(
-                        onClick = {
-                            //onCancel()
-                        },
+                        onClick = onCancel,
                         shape = RoundedCornerShape(20),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = EUOrange110,
@@ -201,7 +205,6 @@ fun DoctorsAdd() {
                             disabledLabelColor = EUWhite100,
                             errorLabelColor = EURed60,
                         ),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.fillMaxWidth()
                     )
 

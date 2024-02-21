@@ -1,15 +1,17 @@
 package fr.medicapp.medicapp.ui.navigation
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -56,12 +58,17 @@ fun NavGraphBuilder.doctorsNavGraph(navController: NavHostController) {
                 },
                 addDoctor = {
                     navController.navigate(DoctorsRoute.Add.route)
-                }
+                },
             )
         }
 
         composable(route = DoctorsRoute.Add.route) {
-            DoctorsAdd()
+            val list = mutableListOf<Pair<Doctor, Int>>()
+
+            DoctorsAdd(
+
+                onCancel = {navController.navigate(DoctorsRoute.Main.route)},
+            )
         }
 
         composable(route = DoctorsRoute.Infos.route) {
@@ -70,6 +77,7 @@ fun NavGraphBuilder.doctorsNavGraph(navController: NavHostController) {
             val repoDoc = DoctorRepository(db.doctorDAO())
             val viewModel = it.sharedViewModel<SharedDoctorViewModel>(navController = navController)
             val state by viewModel.sharedState.collectAsStateWithLifecycle()
+            val context = LocalContext.current
 
            Thread{
                viewModel.getDoctor(id, repoDoc)
@@ -77,7 +85,13 @@ fun NavGraphBuilder.doctorsNavGraph(navController: NavHostController) {
 
             DoctorInfos(
                 state,
-                onClose = {navController.popBackStack()}
+                onClose = {navController.navigate(DoctorsRoute.Main.route)},
+                onClickMail = {
+                    val intent = Intent(
+                        Intent.ACTION_SENDTO,
+                        Uri.parse("mailto:${it.email}"))
+                    startActivity(context, intent, null)
+                }
             )
         }
     }
