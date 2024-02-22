@@ -80,7 +80,6 @@ class SharedDoctorViewModel: ViewModel() {
                                         d2 = location.distanceTo(l).toInt() / 1000
                                     }
                                 } catch (e: Exception) {
-                                    println(e)
                                     d2 = -1
                                 }
                                 Pair(doc, d2)
