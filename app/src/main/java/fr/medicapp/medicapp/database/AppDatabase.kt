@@ -110,7 +110,7 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     DATABASE_NAME
-                ).createFromAsset(PREDATABASE_NAME).build()
+                ).createFromAsset(PREDATABASE_NAME).build() // Ajouter .fallbackToDestructiveMigration() avant .build() pour réinitialiser la base de données
                 INSTANCE = instance
                 instance
             }
