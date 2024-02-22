@@ -188,7 +188,18 @@ fun Calendar(
                         state = rememberScrollState()
                     )
             ) {
-                MedicationCalendarCard(
+                var dailyTreatment = treatmentOfTheDay(treatments, notifications, selection)
+                for (treatment in dailyTreatment) {
+                    MedicationCalendarCard(
+                        treatment.value.first.toString(),
+                        treatment.key,
+                        painScale = true,
+                        active = true
+                    )
+
+                    Spacer(modifier = Modifier.height(15.dp))
+                }
+                /*MedicationCalendarCard(
                     "10h00",
                     "Médicament exemple",
                     painScale = true,
@@ -198,7 +209,7 @@ fun Calendar(
                 Spacer(modifier = Modifier.height(15.dp))
 
                 MedicationCalendarCard(
-                    treatmentOfTheDay(treatments,notifications, LocalDate.now().plusDays(5)).toString(),
+                    selection.toString(),
                     "Médicament exemple",
                     painScale = true,
                     active = false
@@ -238,7 +249,7 @@ fun Calendar(
                     "Médicament exemple",
                     painScale = true,
                     active = false
-                )
+                )*/
             }
 
 
