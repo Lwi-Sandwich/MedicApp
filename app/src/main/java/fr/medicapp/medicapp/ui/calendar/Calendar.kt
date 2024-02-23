@@ -169,7 +169,7 @@ fun Calendar(
                     ,*/
                     state = state,
                     dayContent = { day ->
-                        Day(day.date, isSelected = selection == day.date, medicationNumber = 0) { clicked ->
+                        Day(day.date, isSelected = selection == day.date, medicationNumber = treatmentOfTheDay(treatments, notifications, day.date).size) { clicked ->
                             if (selection != clicked) {
                                 selection = clicked
                             }
@@ -189,10 +189,12 @@ fun Calendar(
                     )
             ) {
                 var dailyTreatment = treatmentOfTheDay(treatments, notifications, selection)
-                for (treatment in dailyTreatment) {
+                val sortedDailyTreatment = sortedTreatment(dailyTreatment)
+                for (treatment in sortedDailyTreatment) {
+                    val heureFormatee = String.format("%02d:%02d", treatment.second, treatment.third)
                     MedicationCalendarCard(
-                        treatment.value.first.toString(),
-                        treatment.key,
+                        heureFormatee,
+                        treatment.first,
                         painScale = true,
                         active = true
                     )
@@ -265,20 +267,6 @@ private fun CalendarPreview() {
 
 
 fun treatmentOfTheDay(treatments: List<Treatment>, notifications: List<Notification>, day : LocalDate) : MutableMap<String, Pair<MutableList<Int>,MutableList<Int>>> {
-    //var result = mutableListOf<Pair<Treatment,Pair<MutableList<Int>,MutableList<Int>>>>()
-    /*for (treatment in treatments) {
-        if (treatment.duration!!.startDate <= day && treatment.duration!!.endDate >= day) {
-            var posology = treatment.posology.split(" ")
-            var quantity = posology[0]
-            var dateFrequency : LocalDate? = null
-            if (posology[3] == "jour") {
-                result[treatment.medication!!.cisCode] = Pair(mutableListOf(), mutableListOf())
-            } else if (posology[3] == "semaine") {
-                if (day.dayOfWeek)
-            }
-        }
-    }*/
-
 
     var result = mutableMapOf<String, Pair<MutableList<Int>,MutableList<Int>>>()
     for (notification in notifications) {
@@ -302,10 +290,20 @@ fun treatmentOfTheDay(treatments: List<Treatment>, notifications: List<Notificat
         }
     }
 
-    //result.sortBy { it -> it.posology }
-
     return result
 }
 
 
-fun sortedTreatment(treatments: MutableMap<String, Pair<MutableList<Int>,MutableList<Int>>>) {}
+fun sortedTreatment(treatments: MutableMap<String, Pair<MutableList<Int>,MutableList<Int>>>) : List<Triple<String,Int,Int>> {
+    var sortedList = mutableListOf<Triple<String,Int,Int>>()
+
+    for (key in treatments.keys) {
+        for (index in 0 until treatments[key]!!.first.size) {
+            sortedList.add(Triple(key, treatments[key]!!.first[index], treatments[key]!!.second[index]))
+        }
+    }
+
+    sortedList.sortWith(compareBy({ it.second }, { it.third }))
+
+    return sortedList
+}
