@@ -17,11 +17,17 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.AutoFixHigh
+import androidx.compose.material.icons.filled.Biotech
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.HourglassTop
+import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Medication
+import androidx.compose.material.icons.filled.Money
 import androidx.compose.material.icons.filled.MoneyOff
 import androidx.compose.material.icons.filled.Repeat
+import androidx.compose.material.icons.filled.Sick
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
@@ -44,6 +50,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -53,11 +60,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import fr.medicapp.medicapp.entity.MedicationEntity
 import fr.medicapp.medicapp.entity.TreatmentEntity
+import fr.medicapp.medicapp.model.Duration
 import fr.medicapp.medicapp.model.Treatment
 import fr.medicapp.medicapp.ui.theme.EUBlue100
 import fr.medicapp.medicapp.ui.theme.EUGreen100
 import fr.medicapp.medicapp.ui.theme.EUGreen40
+import fr.medicapp.medicapp.ui.theme.EUGrey100
 import fr.medicapp.medicapp.ui.theme.EUOrange100
 import fr.medicapp.medicapp.ui.theme.EUOrange110
 import fr.medicapp.medicapp.ui.theme.EUPurple20
@@ -65,6 +75,7 @@ import fr.medicapp.medicapp.ui.theme.EUPurple80
 import fr.medicapp.medicapp.ui.theme.EURed100
 import fr.medicapp.medicapp.ui.theme.EURed40
 import fr.medicapp.medicapp.ui.theme.EUYellow100
+import java.time.LocalDate
 
 /**
  * Cette fonction affiche la prescription avec des informations spécifiques.
@@ -150,6 +161,10 @@ fun Prescription(
                 .padding(innerPadding)
                 .fillMaxSize()
                 .padding(10.dp)
+                .verticalScroll(
+                    enabled = true,
+                    state = rememberScrollState()
+                )
         ) {
             // Itération de la liste des médicaments
             for (i in consultation) {
@@ -181,10 +196,6 @@ fun Prescription(
                     Column(
                         verticalArrangement = Arrangement.spacedBy(5.dp),
                         modifier = Modifier
-                            .verticalScroll(
-                                enabled = true,
-                                state = rememberScrollState()
-                            )
                             .fillMaxSize()
                             .padding(10.dp)
                     ) {
@@ -238,10 +249,6 @@ fun Prescription(
                     Column(
                         verticalArrangement = Arrangement.spacedBy(5.dp),
                         modifier = Modifier
-                            .verticalScroll(
-                                enabled = true,
-                                state = rememberScrollState()
-                            )
                             .fillMaxSize()
                             .padding(10.dp)
                     ) {
@@ -318,6 +325,389 @@ fun Prescription(
                         }
                     }
                 }
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(color = EUPurple80)
+                )
+
+                Spacer(modifier = Modifier.height(5.dp))
+
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        "Informations",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(5.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                // Affichage des informations thérapeutiques
+                ElevatedCard(
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 6.dp
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = EUPurple20,
+                        contentColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(5.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(10.dp)
+                    ) {
+                        Row() {
+                            Box(
+                                modifier = Modifier
+                                    .background(color = EUGreen100)
+                                    .clip(RoundedCornerShape(100.dp))
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.AutoFixHigh,
+                                    contentDescription = "",
+                                    tint = Color.White
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(5.dp))
+                            Text(
+                                "Informations thérapeutiques ",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(5.dp))
+
+                        /*if (i.therapeutic != "") {
+                            Text(
+                                i.therapeutic,
+                                fontSize = 18.sp
+                            )
+                        } else {*/
+                            Text(
+                                "Aucune information thérapeutique pour ce médicament.",
+                                fontSize = 18.sp
+                            )
+                        //}
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                //Affichage des principes actifs
+                ElevatedCard(
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 6.dp
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = EUPurple20,
+                        contentColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(5.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(10.dp)
+                    ) {
+                        Row() {
+                            Box(
+                                modifier = Modifier
+                                    .background(color = EUBlue100)
+                                    .clip(RoundedCornerShape(100.dp))
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Biotech,
+                                    contentDescription = "",
+                                    tint = Color.White
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(5.dp))
+                            Text(
+                                "Principes actifs ",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(5.dp))
+
+                        /*if (i.activePrinciple != "") {
+                            Text(
+                                i.activePrinciple,
+                                fontSize = 18.sp
+                            )
+                        } else {*/
+                            Text(
+                                "Aucun principe actif connu pour ce médicament.",
+                                fontSize = 18.sp
+                            )
+                        //}
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                // Affichage des risques
+                ElevatedCard(
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 6.dp
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = EUPurple20,
+                        contentColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(5.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(10.dp)
+                    ) {
+                        Row() {
+                            Box(
+                                modifier = Modifier
+                                    .background(color = EURed100)
+                                    .clip(RoundedCornerShape(100.dp))
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Warning,
+                                    contentDescription = "",
+                                    tint = Color.White
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(5.dp))
+                            Text(
+                                "Risques ",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(5.dp))
+
+                        /*if (i.contraindication != "") {
+                            Text(
+                                i.contraindication,
+                                fontSize = 18.sp
+                            )
+                        } else {*/
+                            Text(
+                                "Aucun risque connu pour ce médicament.",
+                                fontSize = 18.sp
+                            )
+                        //}
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                // Affichage des effets secondaires
+                ElevatedCard(
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 6.dp
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = EUPurple20,
+                        contentColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(5.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(10.dp)
+                    ) {
+                        Row() {
+                            Box(
+                                modifier = Modifier
+                                    .background(color = EUOrange100)
+                                    .clip(RoundedCornerShape(100.dp))
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Sick,
+                                    contentDescription = "",
+                                    tint = Color.White
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(5.dp))
+                            Text(
+                                "Effets secondaires ",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(5.dp))
+
+                        /*if (i.sideEffect != "") {
+                            Text(
+                                i.sideEffect,
+                                fontSize = 18.sp
+                            )
+                        } else {*/
+                            Text(
+                                "Aucun effet secondaire connu pour ce médicament.",
+                                fontSize = 18.sp
+                            )
+                        //}
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                // Affichage des prix et remboursement du médicament
+                ElevatedCard(
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 6.dp
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = EUPurple20,
+                        contentColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(5.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(10.dp)
+                    ) {
+                        Row() {
+                            Box(
+                                modifier = Modifier
+                                    .background(color = EUYellow100)
+                                    .clip(RoundedCornerShape(100.dp))
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Money,
+                                    contentDescription = "",
+                                    tint = Color.White
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(5.dp))
+                            Text(
+                                "Prix : ",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                //i.price.toString() + " €",
+                                "3€99",
+                                fontSize = 18.sp
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(5.dp))
+
+                        //if (i.refund != "") {
+                            Row() {
+                                Box(
+                                    modifier = Modifier
+                                        .background(color = EUYellow100)
+                                        .clip(RoundedCornerShape(100.dp))
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Filled.AttachMoney,
+                                        contentDescription = "",
+                                        tint = Color.White
+                                    )
+                                }
+                                Spacer(modifier = Modifier.width(5.dp))
+                                Text(
+                                    "Remboursement : ",
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(
+                                    //i.refund,
+                                    "Non remboursé",
+                                    fontSize = 18.sp
+                                )
+                            }
+                        //}
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                // Affichage des informations complémentaires
+                ElevatedCard(
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 6.dp
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = EUPurple20,
+                        contentColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(5.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(10.dp)
+                    ) {
+                        Row() {
+                            Box(
+                                modifier = Modifier
+                                    .background(color = EUGrey100)
+                                    .clip(RoundedCornerShape(100.dp))
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Info,
+                                    contentDescription = "",
+                                    tint = Color.White
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(5.dp))
+                            Text(
+                                "Informations complémentaires ",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(5.dp))
+
+                        /*if (i.additionalInformation != "") {
+                            Text(
+                                i.additionalInformation,
+                                fontSize = 18.sp
+                            )
+                        } else {*/
+                            Text(
+                                "Aucune information complémentaire pour ce médicament.",
+                                fontSize = 18.sp
+                            )
+                        //}
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
             }
         }
     }
@@ -326,6 +716,29 @@ fun Prescription(
 @Preview(showBackground = true)
 @Composable
 private fun PrescriptionPreview() {
-    var tab = mutableListOf<Treatment>()
+    var tab = mutableListOf<Treatment>(
+        Treatment(
+        "1",
+        MedicationEntity(
+            "1",
+            "PARACETAMOL TEVA 500 MG, GELULE",
+            "500mg",
+            listOf("Paracétamol", "Doliprane"),
+            "Douleurs",
+            "Paracétamol",
+            "Douleurs",
+            LocalDate.now(),
+            "Douleurs",
+            "Paracétamol",
+            listOf("Douleurs", "Fièvre"),
+            false
+        ),
+        "1 comprimé toutes les 6 heures",
+        "3",
+        "10",
+        Duration(LocalDate.now(), LocalDate.now().plusDays(5)),
+        false
+    )
+    )
     Prescription(tab, {}, {}, { _, _ -> })
 }
