@@ -1,6 +1,7 @@
 package fr.medicapp.medicapp.ui.navigation
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -23,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -115,6 +117,7 @@ fun NavGraphBuilder.prescriptionNavGraph(
          */
         composable(route = PrescriptionRoute.Prescription.route) {
             val id = it.arguments?.getString("id") ?: return@composable
+            val context = LocalContext.current
             val db = AppDatabase.getInstance(LocalContext.current)
             val repository = TreatmentRepository(db.treatmentDAO())
             val repositoryMedication = MedicationRepository(db.medicationDAO())
@@ -125,6 +128,11 @@ fun NavGraphBuilder.prescriptionNavGraph(
 
             val result: MutableList<Treatment> = mutableListOf()
             val resultInfos: MutableMap<String, InfosMedication> = mutableMapOf()
+
+            fun onClickLien(lien: String) {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(lien))
+                startActivity(context, intent, null)
+            }
 
             Thread {
                 result.clear()
@@ -164,7 +172,6 @@ fun NavGraphBuilder.prescriptionNavGraph(
                 resultInfos
             }
 
-            var context = LocalContext.current
 
             Prescription(
                 consultation = prescription,
@@ -236,6 +243,9 @@ fun NavGraphBuilder.prescriptionNavGraph(
                             repository.update(treatment.toEntity())
                         }
                     }.start()
+                },
+                onClickLien = { lien ->
+                    onClickLien(lien)
                 }
             )
         }

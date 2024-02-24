@@ -55,6 +55,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -94,7 +95,8 @@ fun Prescription(
     informations: MutableMap<String, InfosMedication> = mutableMapOf(),
     onClose: () -> Unit,
     onRemove: () -> Unit,
-    onUpdate: (String, Boolean) -> Unit
+    onUpdate: (String, Boolean) -> Unit,
+    onClickLien: (String) -> Unit
 ) {
     var darkmode : Boolean = isSystemInDarkTheme()
     Scaffold(
@@ -572,11 +574,26 @@ fun Prescription(
                                 fontSize = 18.sp
                             )
                         } else {*/
-                            Text(
+                        infos?.details?.let { lien ->
+                            LinkText(
+                                linkTextData =
+                                listOf(
+                                    LinkTextData(
+                                        text = lien,
+                                        tag = "link",
+                                        annotation = lien,
+                                        onClick = {
+                                            onClickLien(lien)
+                                        }
+                                    )
+                                )
+                            )
+                        }
+/*                            Text(
                                 infos?.details?:
                                 "Aucune information complémentaire pour ce médicament.",
                                 fontSize = 18.sp
-                            )
+                            )*/
                         //}
                     }
                 }
@@ -615,5 +632,5 @@ private fun PrescriptionPreview() {
         false
     )
     )
-    Prescription(tab, mutableMapOf(), {}, {}, { _, _ -> })
+    Prescription(tab, mutableMapOf(), {}, {}, { _, _ -> }, {})
 }
