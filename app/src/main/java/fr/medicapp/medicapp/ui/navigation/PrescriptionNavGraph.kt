@@ -37,10 +37,13 @@ import com.google.accompanist.permissions.rememberPermissionState
 import de.coldtea.smplr.smplralarm.smplrAlarmCancel
 import de.coldtea.smplr.smplralarm.smplrAlarmUpdate
 import fr.medicapp.medicapp.ai.PrescriptionAI
+import fr.medicapp.medicapp.api.Apizza
 import fr.medicapp.medicapp.database.AppDatabase
 import fr.medicapp.medicapp.entity.MedicationEntity
 import fr.medicapp.medicapp.model.Doctor
+import fr.medicapp.medicapp.model.InfosMedication
 import fr.medicapp.medicapp.model.Treatment
+import fr.medicapp.medicapp.repository.InfosMedicationRepository
 import fr.medicapp.medicapp.repository.MedicationRepository
 import fr.medicapp.medicapp.repository.NotificationRepository
 import fr.medicapp.medicapp.repository.SideEffectRepository
@@ -117,14 +120,39 @@ fun NavGraphBuilder.prescriptionNavGraph(
             val repositoryMedication = MedicationRepository(db.medicationDAO())
             val repositorySideEffect = SideEffectRepository(db.sideEffectDAO())
             val repositoryNotification = NotificationRepository(db.notificationDAO())
+            val repositoryInfos = InfosMedicationRepository(db.infosMedicationDAO())
+            val apizza = Apizza.getInstance()
 
-            var result: MutableList<Treatment> = mutableListOf()
+            val result: MutableList<Treatment> = mutableListOf()
+            val resultInfos: MutableMap<String, InfosMedication> = mutableMapOf()
 
             Thread {
                 result.clear()
                 val treatmentEntity = repository.getOne(id)
-                if (treatmentEntity != null) {
-                    result.add(treatmentEntity.toTreatment(repositoryMedication))
+                val treatment = treatmentEntity.toTreatment(repositoryMedication)
+                result.add(treatment)
+                val cis = treatment.medication?.cisCode
+                if (cis != null) {
+                    val infos: InfosMedication = try{
+                        InfosMedication.fromEntity(repositoryInfos.getOne(cis))
+                    } catch (e: Exception) {
+                        try {
+                            val infosFetch = apizza.getInfosByCis(cis)
+                            try{
+                                repositoryInfos.add(infosFetch.toEntity())
+                            } catch (_: Exception) { }
+                            infosFetch
+                        } catch (e: Exception) {
+                            InfosMedication(
+                                cisCode = cis,
+                                indications_therapeutiques = "Indisponible",
+                                classifcation_atc = "Indisponible",
+                                principes_actifs = listOf("Indisponible"),
+                                details = "Indisponible"
+                            )
+                        }
+                    }
+                    resultInfos[cis] = infos
                 }
             }.start()
 
@@ -132,10 +160,15 @@ fun NavGraphBuilder.prescriptionNavGraph(
                 result
             }
 
+            val infos = remember {
+                resultInfos
+            }
+
             var context = LocalContext.current
 
             Prescription(
                 consultation = prescription,
+                informations = infos,
                 onClose = {
                     navController.navigate(PrescriptionRoute.Main.route) {
                         popUpTo(PrescriptionRoute.Prescription.route) {

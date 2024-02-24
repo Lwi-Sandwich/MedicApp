@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.AutoFixHigh
 import androidx.compose.material.icons.filled.Biotech
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Help
 import androidx.compose.material.icons.filled.HourglassTop
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Info
@@ -63,6 +64,7 @@ import androidx.compose.ui.unit.sp
 import fr.medicapp.medicapp.entity.MedicationEntity
 import fr.medicapp.medicapp.entity.TreatmentEntity
 import fr.medicapp.medicapp.model.Duration
+import fr.medicapp.medicapp.model.InfosMedication
 import fr.medicapp.medicapp.model.Treatment
 import fr.medicapp.medicapp.ui.theme.EUBlue100
 import fr.medicapp.medicapp.ui.theme.EUGreen100
@@ -89,6 +91,7 @@ import java.time.LocalDate
 @Composable
 fun Prescription(
     consultation : MutableList<Treatment>,
+    informations: MutableMap<String, InfosMedication> = mutableMapOf(),
     onClose: () -> Unit,
     onRemove: () -> Unit,
     onUpdate: (String, Boolean) -> Unit
@@ -168,6 +171,7 @@ fun Prescription(
         ) {
             // Itération de la liste des médicaments
             for (i in consultation) {
+                val infos = informations[i.medication?.cisCode ?: ""]
                 var notification = remember {
                     mutableStateOf(i.notification)
                 }
@@ -398,6 +402,7 @@ fun Prescription(
                             )
                         } else {*/
                             Text(
+                                infos?.indications_therapeutiques?:
                                 "Aucune information thérapeutique pour ce médicament.",
                                 fontSize = 18.sp
                             )
@@ -454,6 +459,7 @@ fun Prescription(
                             )
                         } else {*/
                             Text(
+                                infos?.principes_actifs?.joinToString(", ")?:
                                 "Aucun principe actif connu pour ce médicament.",
                                 fontSize = 18.sp
                             )
@@ -489,14 +495,14 @@ fun Prescription(
                                     .clip(RoundedCornerShape(100.dp))
                             ) {
                                 Icon(
-                                    imageVector = Icons.Filled.Warning,
+                                    imageVector = Icons.Filled.Info,
                                     contentDescription = "",
                                     tint = Color.White
                                 )
                             }
                             Spacer(modifier = Modifier.width(5.dp))
                             Text(
-                                "Risques ",
+                                "Classification ATC",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold
                             )
@@ -510,142 +516,10 @@ fun Prescription(
                             )
                         } else {*/
                             Text(
-                                "Aucun risque connu pour ce médicament.",
+                                infos?.classifcation_atc?:
+                                "Classification ATC inconnue pour ce médicament.",
                                 fontSize = 18.sp
                             )
-                        //}
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(15.dp))
-
-                // Affichage des effets secondaires
-                ElevatedCard(
-                    elevation = CardDefaults.cardElevation(
-                        defaultElevation = 6.dp
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = EUPurple20,
-                        contentColor = Color.Black
-                    ),
-                    shape = RoundedCornerShape(10.dp)
-                ) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(5.dp),
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(10.dp)
-                    ) {
-                        Row() {
-                            Box(
-                                modifier = Modifier
-                                    .background(color = EUOrange100)
-                                    .clip(RoundedCornerShape(100.dp))
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Filled.Sick,
-                                    contentDescription = "",
-                                    tint = Color.White
-                                )
-                            }
-                            Spacer(modifier = Modifier.width(5.dp))
-                            Text(
-                                "Effets secondaires ",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(5.dp))
-
-                        /*if (i.sideEffect != "") {
-                            Text(
-                                i.sideEffect,
-                                fontSize = 18.sp
-                            )
-                        } else {*/
-                            Text(
-                                "Aucun effet secondaire connu pour ce médicament.",
-                                fontSize = 18.sp
-                            )
-                        //}
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(15.dp))
-
-                // Affichage des prix et remboursement du médicament
-                ElevatedCard(
-                    elevation = CardDefaults.cardElevation(
-                        defaultElevation = 6.dp
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = EUPurple20,
-                        contentColor = Color.Black
-                    ),
-                    shape = RoundedCornerShape(10.dp)
-                ) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(5.dp),
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(10.dp)
-                    ) {
-                        Row() {
-                            Box(
-                                modifier = Modifier
-                                    .background(color = EUYellow100)
-                                    .clip(RoundedCornerShape(100.dp))
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Filled.Money,
-                                    contentDescription = "",
-                                    tint = Color.White
-                                )
-                            }
-                            Spacer(modifier = Modifier.width(5.dp))
-                            Text(
-                                "Prix : ",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                //i.price.toString() + " €",
-                                "3€99",
-                                fontSize = 18.sp
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.width(5.dp))
-
-                        //if (i.refund != "") {
-                            Row() {
-                                Box(
-                                    modifier = Modifier
-                                        .background(color = EUYellow100)
-                                        .clip(RoundedCornerShape(100.dp))
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Filled.AttachMoney,
-                                        contentDescription = "",
-                                        tint = Color.White
-                                    )
-                                }
-                                Spacer(modifier = Modifier.width(5.dp))
-                                Text(
-                                    "Remboursement : ",
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                                Text(
-                                    //i.refund,
-                                    "Non remboursé",
-                                    fontSize = 18.sp
-                                )
-                            }
                         //}
                     }
                 }
@@ -678,14 +552,14 @@ fun Prescription(
                                     .clip(RoundedCornerShape(100.dp))
                             ) {
                                 Icon(
-                                    imageVector = Icons.Filled.Info,
+                                    imageVector = Icons.Filled.Help,
                                     contentDescription = "",
                                     tint = Color.White
                                 )
                             }
                             Spacer(modifier = Modifier.width(5.dp))
                             Text(
-                                "Informations complémentaires ",
+                                "Renseignements complémentaires",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold
                             )
@@ -699,6 +573,7 @@ fun Prescription(
                             )
                         } else {*/
                             Text(
+                                infos?.details?:
                                 "Aucune information complémentaire pour ce médicament.",
                                 fontSize = 18.sp
                             )
@@ -740,5 +615,5 @@ private fun PrescriptionPreview() {
         false
     )
     )
-    Prescription(tab, {}, {}, { _, _ -> })
+    Prescription(tab, mutableMapOf(), {}, {}, { _, _ -> })
 }
