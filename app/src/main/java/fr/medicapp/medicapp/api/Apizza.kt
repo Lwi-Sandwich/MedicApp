@@ -21,6 +21,7 @@ class Apizza private constructor() {
     }
 
     private val apiUrl = "https://data.instamed.fr/api/rpps"
+    private val serverUrl = "http://138.68.108.128:5000/infos"
 
     fun pingApi(): Boolean {
         val response = khttp.get("$apiUrl?_per_page=1")
@@ -82,20 +83,24 @@ class Apizza private constructor() {
     }
 
     fun getInfosByCis(cis: String): InfosMedication{
-        // TODO l'api est pas prête, du coup on attend une seconde et on retourne un placeholder.
-        Thread.sleep(1000)
+        val response = khttp.get(
+            serverUrl,
+            params = mapOf("cis" to cis)
+        )
+        if (response.statusCode != 200) {
+            throw Exception("Medication not found")
+        }
+        val medication = response.jsonObject
+        val principesActifs = mutableListOf<String>()
+        for (i in 0 until medication.getJSONArray("Principes actifs").length()) {
+            principesActifs.add(medication.getJSONArray("Principes actifs").getString(i))
+        }
         return InfosMedication(
             cis,
-            "ABACAVIR/LAMIVUDINE SANDOZ est indiqué dans le traitement de l'infection par le " +
-                    "Virus de l'Immunodéficience Humaine (VIH) chez les adultes, les adolescents et les enfants pesant au moins 25 kg . " +
-                    "L'abacavir ne doit pas être utilisé chez les patients porteurs de l'allèlle HLA-B*5701.",
-            "J05AR02 2013 Lamivudine et abacavir",
-            listOf(
-                "Chlorhydrate d'abacavir monohydraté",
-                "Abacavir base: 600 mg",
-                "Lamivudine: 300 mg"
-            ),
-            "https://base-donnees-publique.medicaments.gouv.fr/extrait.php?specid=67720261"
+            medication.getString("Indications therapeutiques"),
+            medication.getString("Classification ATC"),
+            principesActifs,
+            medication.getString("Details")
         )
     }
 }
