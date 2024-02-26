@@ -196,6 +196,7 @@ private fun PrescriptionMainMenuPreview() {
             quantity = "1 boite",
             renew = "1 fois",
             duration = Duration(
+                0,
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now()
             ),

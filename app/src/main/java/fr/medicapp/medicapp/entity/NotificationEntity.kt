@@ -3,6 +3,9 @@ package fr.medicapp.medicapp.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import fr.medicapp.medicapp.model.Notification
+import fr.medicapp.medicapp.model.Treatment
+import fr.medicapp.medicapp.repository.MedicationRepository
+import fr.medicapp.medicapp.repository.TreatmentRepository
 import java.time.DayOfWeek
 
 /**
@@ -55,10 +58,10 @@ data class NotificationEntity(
      *
      * @return Un objet Notification correspondant à cette entité.
      */
-    fun toNotification(): Notification {
+    fun toNotification(repositoryTreatment: TreatmentRepository, repositoryMedication: MedicationRepository): Notification {
         return Notification(
             id = id,
-            medicationName = null,
+            medicationName = repositoryTreatment.getOne(medicationName).toTreatment(repositoryMedication),
             frequency = frequency.sortedBy{it.ordinal}.toMutableList(),
             hours = hours,
             minutes = minutes,

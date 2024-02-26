@@ -14,6 +14,7 @@ import java.time.format.DateTimeFormatter
  */
 data class Duration(
 
+    var idd : Int,
     /**
      * La date de début de la durée.
      */
@@ -22,7 +23,7 @@ data class Duration(
     /**
      * La date de fin de la durée.
      */
-    var endDate: LocalDate
+    var endDate: LocalDate,
 ) {
 
     /**
@@ -53,8 +54,9 @@ data class Duration(
      */
     fun toEntity(): DurationEntity {
         return DurationEntity(
+            idd = idd,
             startDate = startDate,
-            endDate = endDate
+            endDate = endDate,
         )
     }
 }

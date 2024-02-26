@@ -62,7 +62,7 @@ fun NavGraphBuilder.notificationNavGraph(
                 val notifications = notificationEntityTmp.map {
                     val treatmentTmp = repositoryTreatment.getOne(it.medicationName)
                         .toTreatment(repositoryMedication)
-                    val notificationTmp = it.toNotification()
+                    val notificationTmp = it.toNotification(repositoryTreatment, repositoryMedication)
                     notificationTmp.medicationName = treatmentTmp
                     notificationTmp
                 }
@@ -114,7 +114,7 @@ fun NavGraphBuilder.notificationNavGraph(
                     val treatmentTmp =
                         repositoryTreatment.getOne(notificationEntityTmp.medicationName)
                             .toTreatment(repositoryMedication)
-                    val notificationTmp = notificationEntityTmp.toNotification()
+                    val notificationTmp = notificationEntityTmp.toNotification(repositoryTreatment, repositoryMedication)
                     notificationTmp.medicationName = treatmentTmp
                     result.add(notificationTmp)
                 }

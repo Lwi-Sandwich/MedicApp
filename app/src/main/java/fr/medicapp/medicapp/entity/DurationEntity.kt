@@ -1,5 +1,7 @@
 package fr.medicapp.medicapp.entity
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import fr.medicapp.medicapp.model.Duration
 import java.time.LocalDate
 
@@ -9,7 +11,10 @@ import java.time.LocalDate
  * @property startDate La date de début de la durée.
  * @property endDate La date de fin de la durée.
  */
+@Entity
 data class DurationEntity(
+    @PrimaryKey
+    var idd : Int,
 
     /**
      * La date de début de la durée.
@@ -19,7 +24,7 @@ data class DurationEntity(
     /**
      * La date de fin de la durée.
      */
-    var endDate: LocalDate
+    var endDate: LocalDate,
 ) {
 
     /**
@@ -29,6 +34,7 @@ data class DurationEntity(
      */
     fun toDuration(): Duration {
         return Duration(
+            idd = idd,
             startDate = startDate,
             endDate = endDate
         )
