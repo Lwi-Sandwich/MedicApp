@@ -52,6 +52,7 @@ import fr.medicapp.medicapp.ui.theme.EURed100
 import java.time.LocalDate
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
+import fr.medicapp.medicapp.ui.theme.EURed110
 
 /**
  * Cette fonction affiche l'écran d'édition de prescription avec des informations spécifiques.
@@ -78,7 +79,11 @@ fun EditPrescription(
     onImagePicker: () -> Unit,
     cameraPermissionState: PermissionState,
     prescription: Prescription,
-    medications: List<MedicationEntity>
+    medications: List<MedicationEntity>,
+    alert: Boolean = false,
+    alertText: String = "",
+    onAlert: () -> Unit = {},
+    hideAlert: () -> Unit = {}
 ) {
     var darkmode : Boolean = isSystemInDarkTheme()
     var errorDialogOpen = remember { mutableStateOf(false) }
@@ -259,6 +264,60 @@ fun EditPrescription(
                 }
             }
         }
+    }
+    if (alert) {
+        AlertDialog(
+            onDismissRequest = hideAlert,
+            confirmButton = {
+                Button(
+                    onClick = onAlert,
+                    shape = RoundedCornerShape(20),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = EURed110,
+                        contentColor = Color.White
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Enregistrer quand même",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = hideAlert,
+                    shape = RoundedCornerShape(20),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = EUGreen100,
+                        contentColor = Color.White
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Annuler",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            },
+            title = {
+                Text(
+                    text = "Redondance des principes actifs !",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Text(
+                    text = alertText,
+                    fontSize = 16.sp
+                )
+            }
+        )
     }
 }
 

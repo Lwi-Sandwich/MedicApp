@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -261,6 +262,8 @@ fun NavGraphBuilder.prescriptionNavGraph(
             val db = AppDatabase.getInstance(LocalContext.current)
             val repository = TreatmentRepository(db.treatmentDAO())
             val repositoryMedication = MedicationRepository(db.medicationDAO())
+            val repositoryInfos = InfosMedicationRepository(db.infosMedicationDAO())
+            val apizza = Apizza.getInstance()
 
             var result: MutableList<MedicationEntity> = mutableListOf()
 
@@ -283,8 +286,16 @@ fun NavGraphBuilder.prescriptionNavGraph(
 
             var imageUri by remember { mutableStateOf<Uri?>(null) }
 
-            var loading = remember {
+            val loading = remember {
                 mutableStateOf(false)
+            }
+
+            val alert = remember {
+                mutableStateOf(false)
+            }
+
+            val alertMessage = remember {
+                mutableStateOf("")
             }
 
             val imagePicker = rememberLauncherForActivityResult(
@@ -430,11 +441,64 @@ fun NavGraphBuilder.prescriptionNavGraph(
                         Thread {
                             val treatments =
                                 state.treatments.map { treatment -> treatment.toEntity() }
+                            // Récupération des informations sur les médicaments du patient
+                            val infos = state.treatments.mapNotNull { treatment ->
+                                val cis = treatment.medication?.cisCode
+                                if (cis != null) {
+                                    val info: InfosMedication? = try {
+                                        InfosMedication.fromEntity(repositoryInfos.getOne(cis))
+                                    } catch (e: Exception) {
+                                        try {
+                                            val infosFetch = apizza.getInfosByCis(cis)
+                                            try {
+                                                repositoryInfos.add(infosFetch.toEntity())
+                                            } catch (_: Exception) {
+                                            }
+                                            infosFetch
+                                        } catch (e: Exception) {
+                                            null
+                                        }
+                                    }
+                                    info
+                                } else {
+                                    null
+                                }
+                            }
+                            // Détecter si un médicament a un principe actif en commun avec un autre médicament
+                            val principesActifsRedondants: MutableList<String> = mutableListOf()
+                            val medicamentsConcernes: MutableList<String> = mutableListOf()
+                            for (i in infos.indices) {
+                                for (j in i + 1 until infos.size) {
+                                    val info1 = infos[i]
+                                    val info2 = infos[j]
+                                    val intersection = info1.principes_actifs.intersect(info2.principes_actifs)
+                                    if (intersection.isNotEmpty()) {
+                                        principesActifsRedondants.addAll(intersection)
+                                        medicamentsConcernes.add(info1.cisCode)
+                                        medicamentsConcernes.add(info2.cisCode)
+                                    }
+                                }
+                            }
+                            val medicamentsConcernesUniques = medicamentsConcernes.distinct()
+                            val principesActifsRedondantsUniques = principesActifsRedondants.distinct()
+                            if (medicamentsConcernesUniques.isNotEmpty()) {
+                                alertMessage.value = "Attention, les médicaments suivants ont des principes actifs en commun : " +
+                                        medicamentsConcernesUniques.joinToString(", ") +
+                                        ". Les principes actifs en commun sont : " +
+                                        principesActifsRedondantsUniques.joinToString(", ") +
+                                        "." +
+                                        "Veuillez consulter un professionnel de santé pour plus d'informations."
+                                alert.value = true
+                            }
+                        }.start()
+                    },
+                    onAlert = {
+                        Thread {
+                            val treatments = state.treatments.map { treatment -> treatment.toEntity() }
                             treatments.forEach { treatment ->
                                 repository.add(treatment)
                             }
                         }.start()
-
                         if (state.treatments.any { it.notification }) {
                             navController.navigate(NotificationRoute.AddNotification.route) {
                                 popUpTo(PrescriptionRoute.AddPrescription.route) {
@@ -460,7 +524,10 @@ fun NavGraphBuilder.prescriptionNavGraph(
                     onImagePicker = {
                         imagePicker.launch("image/*")
                     },
-                    medications = medication
+                    medications = medication,
+                    alertText = alertMessage.value,
+                    alert = alert.value,
+                    hideAlert = {alert.value = false}
                 )
             }
         }
