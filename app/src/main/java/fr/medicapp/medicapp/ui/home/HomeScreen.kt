@@ -25,9 +25,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import fr.medicapp.medicapp.model.Notification
+import fr.medicapp.medicapp.ui.calendar.sortedTreatment
+import fr.medicapp.medicapp.ui.calendar.treatmentOfTheDay
 import fr.medicapp.medicapp.ui.home.assets.DayTreatment
 import fr.medicapp.medicapp.ui.theme.EUGreen100
 import fr.medicapp.medicapp.ui.theme.EUGreen120
+import java.time.LocalDate
 
 /**
  * Écran d'accueil de l'application MedicApp.
@@ -43,6 +47,7 @@ import fr.medicapp.medicapp.ui.theme.EUGreen120
  */
 @Composable
 fun HomeScreen(
+    notifications : MutableList<Notification>,
     onAddPrescriptionClick: () -> Unit,
     onAddSideEffectClick: () -> Unit,
     onAddNotification: () -> Unit
@@ -108,15 +113,20 @@ fun HomeScreen(
                     //TODO
                     // Mettre des cartes de traitement
 
-                    DayTreatment(
-                        enabled = false,
-                        hour = "14h",
-                        medication = "Médicament test 1"
-                    )
+                    var dailyTreatment = treatmentOfTheDay(mutableListOf(), notifications, LocalDate.now())
+                    val sortedDailyTreatment = sortedTreatment(dailyTreatment)
+                    for (treatment in sortedDailyTreatment) {
+                        val heureFormatee = String.format("%02d:%02d", treatment.second, treatment.third)
+                        DayTreatment(
+                            enabled = true,
+                            hour = heureFormatee,
+                            medication = treatment.first
+                        )
 
-                    Spacer(modifier = Modifier.height(10.dp))
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
 
-                    DayTreatment(
+                    /*DayTreatment(
                         enabled = false,
                         hour = "15h",
                         medication = "Médicament test 2"
@@ -144,7 +154,7 @@ fun HomeScreen(
                         enabled = true,
                         hour = "20h",
                         medication = "Médicament test 5"
-                    )
+                    )*/
                 }
             }
         }
@@ -205,8 +215,9 @@ fun HomeScreen(
 @Composable
 private fun HomeScreenPreview() {
     HomeScreen(
+        notifications = mutableListOf(),
         onAddPrescriptionClick = { },
         onAddSideEffectClick = { },
-        onAddNotification = { }
+        onAddNotification = {  }
     )
 }
