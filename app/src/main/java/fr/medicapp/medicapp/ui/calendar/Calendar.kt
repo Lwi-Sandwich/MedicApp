@@ -283,7 +283,7 @@ fun treatmentOfTheDay(treatments: List<Treatment>, notifications: List<Notificat
                     result[treatment.medication!!.name] = Pair(notification.hours, notification.minutes)
                 }
             } else {
-                if (notification.frequency.contains(day.dayOfWeek)) {
+                if (((day.dayOfYear - notification.medicationName!!.duration!!.startDate.dayOfYear) % 30) == 0) {
                     result[treatment.medication!!.name] = Pair(notification.hours, notification.minutes)
                 }
             }
