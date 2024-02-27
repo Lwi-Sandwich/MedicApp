@@ -362,7 +362,7 @@ fun NavGraphBuilder.prescriptionNavGraph(
                     if (imageUri != null && success) {
                         loading.value = true
                         val prescriptionAI = PrescriptionAI.getInstance(context)
-                        val prediction = prescriptionAI.analyse(
+                        prescriptionAI.analyse(
                             imageUri!!,
                             onPrediction = { prediction ->
                                 var treatment = Treatment()
@@ -439,9 +439,13 @@ fun NavGraphBuilder.prescriptionNavGraph(
                     },
                     onConfirm = {
                         Thread {
-                            val treatsNotEntity = state.treatments
-                            val treatments =
-                                treatsNotEntity.map { treatment -> treatment.toEntity() }
+                            val treatsNotEntity = state.treatments.toMutableList()
+                            val treatsBD = try {
+                                repository.getAll().map { it.toTreatment(repositoryMedication) }
+                            } catch (e: Exception) {
+                                emptyList()
+                            }
+                            treatsNotEntity.addAll(treatsBD)
                             // Récupération des informations sur les médicaments du patient
                             val infos = treatsNotEntity.mapNotNull { treatment ->
                                 val cis = treatment.medication?.cisCode
