@@ -49,6 +49,8 @@ import com.kizitonwose.calendar.compose.WeekCalendar
 import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
 import com.kizitonwose.calendar.core.atStartOfMonth
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
+import fr.medicapp.medicapp.model.Notification
+import fr.medicapp.medicapp.model.Treatment
 import fr.medicapp.medicapp.ui.calendar.assets.Day
 import fr.medicapp.medicapp.ui.calendar.assets.MedicationCalendarCard
 import fr.medicapp.medicapp.ui.theme.EUGreen100
@@ -67,6 +69,8 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Calendar(
+    treatments : MutableList<Treatment>,
+    notifications : MutableList<Notification>
 ) {
     val darkmode: Boolean = isSystemInDarkTheme()
     Scaffold(
@@ -165,7 +169,7 @@ fun Calendar(
                     ,*/
                     state = state,
                     dayContent = { day ->
-                        Day(day.date, isSelected = selection == day.date, medicationNumber = 0) { clicked ->
+                        Day(day.date, isSelected = selection == day.date, medicationNumber = treatmentOfTheDay(treatments, notifications, day.date).size) { clicked ->
                             if (selection != clicked) {
                                 selection = clicked
                             }
@@ -184,7 +188,20 @@ fun Calendar(
                         state = rememberScrollState()
                     )
             ) {
-                MedicationCalendarCard(
+                var dailyTreatment = treatmentOfTheDay(treatments, notifications, selection)
+                val sortedDailyTreatment = sortedTreatment(dailyTreatment)
+                for (treatment in sortedDailyTreatment) {
+                    val heureFormatee = String.format("%02d:%02d", treatment.second, treatment.third)
+                    MedicationCalendarCard(
+                        heureFormatee,
+                        treatment.first,
+                        painScale = true,
+                        active = true
+                    )
+
+                    Spacer(modifier = Modifier.height(15.dp))
+                }
+                /*MedicationCalendarCard(
                     "10h00",
                     "Médicament exemple",
                     painScale = true,
@@ -194,7 +211,7 @@ fun Calendar(
                 Spacer(modifier = Modifier.height(15.dp))
 
                 MedicationCalendarCard(
-                    "11h00",
+                    selection.toString(),
                     "Médicament exemple",
                     painScale = true,
                     active = false
@@ -234,7 +251,7 @@ fun Calendar(
                     "Médicament exemple",
                     painScale = true,
                     active = false
-                )
+                )*/
             }
 
 
@@ -245,5 +262,48 @@ fun Calendar(
 @Preview(showBackground = true)
 @Composable
 private fun CalendarPreview() {
-    Calendar()
+    Calendar(mutableListOf(), mutableListOf())
+}
+
+
+fun treatmentOfTheDay(treatments: List<Treatment>, notifications: List<Notification>, day : LocalDate) : MutableMap<String, Pair<MutableList<Int>,MutableList<Int>>> {
+
+    var result = mutableMapOf<String, Pair<MutableList<Int>,MutableList<Int>>>()
+    for (notification in notifications) {
+        var durationNotif = notification.medicationName!!.duration!!
+        if (durationNotif.startDate <= day && durationNotif.endDate >= day) {
+            var treatment = notification.medicationName!!
+            var posology = treatment.posology.split(" ")
+            //var quantity = posology[0]
+            //var dateFrequency : LocalDate? = null
+            if (posology[3] == "jour") {
+                result[treatment.medication!!.name] = Pair(notification.hours, notification.minutes)
+            } else if (posology[3] == "semaine") {
+                if (notification.frequency.contains(day.dayOfWeek)) {
+                    result[treatment.medication!!.name] = Pair(notification.hours, notification.minutes)
+                }
+            } else {
+                if (((day.dayOfYear - notification.medicationName!!.duration!!.startDate.dayOfYear) % 30) == 0) {
+                    result[treatment.medication!!.name] = Pair(notification.hours, notification.minutes)
+                }
+            }
+        }
+    }
+
+    return result
+}
+
+
+fun sortedTreatment(treatments: MutableMap<String, Pair<MutableList<Int>,MutableList<Int>>>) : List<Triple<String,Int,Int>> {
+    var sortedList = mutableListOf<Triple<String,Int,Int>>()
+
+    for (key in treatments.keys) {
+        for (index in 0 until treatments[key]!!.first.size) {
+            sortedList.add(Triple(key, treatments[key]!!.first[index], treatments[key]!!.second[index]))
+        }
+    }
+
+    sortedList.sortWith(compareBy({ it.second }, { it.third }))
+
+    return sortedList
 }

@@ -6,6 +6,8 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import fr.medicapp.medicapp.dao.DoctorDAO
+import fr.medicapp.medicapp.dao.InfosMedicationDAO
+import fr.medicapp.medicapp.dao.DurationDAO
 import fr.medicapp.medicapp.dao.MedicationDAO
 import fr.medicapp.medicapp.dao.NotificationDAO
 import fr.medicapp.medicapp.dao.PrescriptionDAO
@@ -13,6 +15,8 @@ import fr.medicapp.medicapp.dao.SideEffectDAO
 import fr.medicapp.medicapp.dao.TreatmentDAO
 import fr.medicapp.medicapp.dao.UserDAO
 import fr.medicapp.medicapp.entity.DoctorEntity
+import fr.medicapp.medicapp.entity.InfosMedicationEntity
+import fr.medicapp.medicapp.entity.DurationEntity
 import fr.medicapp.medicapp.entity.MedicationEntity
 import fr.medicapp.medicapp.entity.NotificationEntity
 import fr.medicapp.medicapp.entity.PrescriptionEntity
@@ -31,9 +35,11 @@ import fr.medicapp.medicapp.entity.UserEntity
         UserEntity::class,
         SideEffectEntity::class,
         MedicationEntity::class,
-        NotificationEntity::class
+        NotificationEntity::class,
+        InfosMedicationEntity::class,
+        DurationEntity::class
     ],
-    version = 2
+    version = 3
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -80,6 +86,10 @@ abstract class AppDatabase : RoomDatabase() {
      */
     abstract fun notificationDAO(): NotificationDAO
 
+    abstract fun durationDAO(): DurationDAO
+
+    abstract fun infosMedicationDAO(): InfosMedicationDAO
+
     companion object {
 
         /**
@@ -110,7 +120,7 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     DATABASE_NAME
-                ).createFromAsset(PREDATABASE_NAME).build()
+                ).createFromAsset(PREDATABASE_NAME).build() // Ajouter .fallbackToDestructiveMigration() avant .build() pour réinitialiser la base de données
                 INSTANCE = instance
                 instance
             }
