@@ -67,6 +67,7 @@ fun SearchDialog(
             Column(
             ) {
                 OutlinedTextField(
+                    singleLine=true,
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
                     label = { Text("Recherche") }

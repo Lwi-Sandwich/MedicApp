@@ -3,6 +3,7 @@ package fr.medicapp.medicapp.entity
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.RoomWarnings
 import fr.medicapp.medicapp.model.Treatment
 import fr.medicapp.medicapp.repository.MedicationRepository
 
@@ -18,6 +19,7 @@ import fr.medicapp.medicapp.repository.MedicationRepository
  * @property notification Indique si une notification est associée au traitement.
  */
 @Entity
+@SuppressWarnings(RoomWarnings.PRIMARY_KEY_FROM_EMBEDDED_IS_DROPPED)
 data class TreatmentEntity(
 
     /**

@@ -1,6 +1,7 @@
 package fr.medicapp.medicapp.ui.navigation
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -37,10 +40,13 @@ import com.google.accompanist.permissions.rememberPermissionState
 import de.coldtea.smplr.smplralarm.smplrAlarmCancel
 import de.coldtea.smplr.smplralarm.smplrAlarmUpdate
 import fr.medicapp.medicapp.ai.PrescriptionAI
+import fr.medicapp.medicapp.api.Apizza
 import fr.medicapp.medicapp.database.AppDatabase
 import fr.medicapp.medicapp.entity.MedicationEntity
 import fr.medicapp.medicapp.model.Doctor
+import fr.medicapp.medicapp.model.InfosMedication
 import fr.medicapp.medicapp.model.Treatment
+import fr.medicapp.medicapp.repository.InfosMedicationRepository
 import fr.medicapp.medicapp.repository.MedicationRepository
 import fr.medicapp.medicapp.repository.NotificationRepository
 import fr.medicapp.medicapp.repository.SideEffectRepository
@@ -112,19 +118,50 @@ fun NavGraphBuilder.prescriptionNavGraph(
          */
         composable(route = PrescriptionRoute.Prescription.route) {
             val id = it.arguments?.getString("id") ?: return@composable
+            val context = LocalContext.current
             val db = AppDatabase.getInstance(LocalContext.current)
             val repository = TreatmentRepository(db.treatmentDAO())
             val repositoryMedication = MedicationRepository(db.medicationDAO())
             val repositorySideEffect = SideEffectRepository(db.sideEffectDAO())
             val repositoryNotification = NotificationRepository(db.notificationDAO())
+            val repositoryInfos = InfosMedicationRepository(db.infosMedicationDAO())
+            val apizza = Apizza.getInstance()
 
-            var result: MutableList<Treatment> = mutableListOf()
+            val result: MutableList<Treatment> = mutableListOf()
+            val resultInfos: MutableMap<String, InfosMedication> = mutableMapOf()
+
+            fun onClickLien(lien: String) {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(lien))
+                startActivity(context, intent, null)
+            }
 
             Thread {
                 result.clear()
                 val treatmentEntity = repository.getOne(id)
-                if (treatmentEntity != null) {
-                    result.add(treatmentEntity.toTreatment(repositoryMedication))
+                val treatment = treatmentEntity.toTreatment(repositoryMedication)
+                result.add(treatment)
+                val cis = treatment.medication?.cisCode
+                if (cis != null) {
+                    val infos: InfosMedication = try{
+                        InfosMedication.fromEntity(repositoryInfos.getOne(cis))
+                    } catch (e: Exception) {
+                        try {
+                            val infosFetch = apizza.getInfosByCis(cis)
+                            try{
+                                repositoryInfos.add(infosFetch.toEntity())
+                            } catch (_: Exception) { }
+                            infosFetch
+                        } catch (e: Exception) {
+                            InfosMedication(
+                                cisCode = cis,
+                                indications_therapeutiques = "Indisponible",
+                                classifcation_atc = "Indisponible",
+                                principes_actifs = listOf("Indisponible"),
+                                details = "Indisponible"
+                            )
+                        }
+                    }
+                    resultInfos[cis] = infos
                 }
             }.start()
 
@@ -132,10 +169,14 @@ fun NavGraphBuilder.prescriptionNavGraph(
                 result
             }
 
-            var context = LocalContext.current
+            val infos = remember {
+                resultInfos
+            }
+
 
             Prescription(
                 consultation = prescription,
+                informations = infos,
                 onClose = {
                     navController.navigate(PrescriptionRoute.Main.route) {
                         popUpTo(PrescriptionRoute.Prescription.route) {
@@ -203,6 +244,9 @@ fun NavGraphBuilder.prescriptionNavGraph(
                             repository.update(treatment.toEntity())
                         }
                     }.start()
+                },
+                onClickLien = { lien ->
+                    onClickLien(lien)
                 }
             )
         }
@@ -218,6 +262,8 @@ fun NavGraphBuilder.prescriptionNavGraph(
             val db = AppDatabase.getInstance(LocalContext.current)
             val repository = TreatmentRepository(db.treatmentDAO())
             val repositoryMedication = MedicationRepository(db.medicationDAO())
+            val repositoryInfos = InfosMedicationRepository(db.infosMedicationDAO())
+            val apizza = Apizza.getInstance()
 
             var result: MutableList<MedicationEntity> = mutableListOf()
 
@@ -240,8 +286,16 @@ fun NavGraphBuilder.prescriptionNavGraph(
 
             var imageUri by remember { mutableStateOf<Uri?>(null) }
 
-            var loading = remember {
+            val loading = remember {
                 mutableStateOf(false)
+            }
+
+            val alert = remember {
+                mutableStateOf(false)
+            }
+
+            val alertMessage = remember {
+                mutableStateOf("")
             }
 
             val imagePicker = rememberLauncherForActivityResult(
@@ -308,7 +362,7 @@ fun NavGraphBuilder.prescriptionNavGraph(
                     if (imageUri != null && success) {
                         loading.value = true
                         val prescriptionAI = PrescriptionAI.getInstance(context)
-                        val prediction = prescriptionAI.analyse(
+                        prescriptionAI.analyse(
                             imageUri!!,
                             onPrediction = { prediction ->
                                 var treatment = Treatment()
@@ -385,13 +439,73 @@ fun NavGraphBuilder.prescriptionNavGraph(
                     },
                     onConfirm = {
                         Thread {
-                            val treatments =
-                                state.treatments.map { treatment -> treatment.toEntity() }
+                            val treatsNotEntity = state.treatments.toMutableList()
+                            val treatsBD = try {
+                                repository.getAll().map { it.toTreatment(repositoryMedication) }
+                            } catch (e: Exception) {
+                                emptyList()
+                            }
+                            treatsNotEntity.addAll(treatsBD)
+                            // Récupération des informations sur les médicaments du patient
+                            val infos = treatsNotEntity.mapNotNull { treatment ->
+                                val cis = treatment.medication?.cisCode
+                                if (cis != null) {
+                                    val info: InfosMedication? = try {
+                                        InfosMedication.fromEntity(repositoryInfos.getOne(cis))
+                                    } catch (e: Exception) {
+                                        try {
+                                            val infosFetch = apizza.getInfosByCis(cis)
+                                            try {
+                                                repositoryInfos.add(infosFetch.toEntity())
+                                            } catch (_: Exception) {
+                                            }
+                                            infosFetch
+                                        } catch (e: Exception) {
+                                            null
+                                        }
+                                    }
+                                    info
+                                } else {
+                                    null
+                                }
+                            }
+                            // Détecter si un médicament a un principe actif en commun avec un autre médicament
+                            val principesActifsRedondants: MutableList<String> = mutableListOf()
+                            val medicamentsConcernes: MutableList<String> = mutableListOf()
+                            for (i in infos.indices) {
+                                for (j in i + 1 until infos.size) {
+                                    val info1 = infos[i]
+                                    val info2 = infos[j]
+                                    val intersection = info1.principes_actifs.intersect(info2.principes_actifs.toSet())
+                                    if (intersection.isNotEmpty()) {
+                                        val nom1 = treatsNotEntity.find { it.medication?.cisCode == info1.cisCode }?.medication?.name?: ""
+                                        val nom2 = treatsNotEntity.find { it.medication?.cisCode == info2.cisCode }?.medication?.name?: ""
+                                        principesActifsRedondants.addAll(intersection)
+                                        medicamentsConcernes.add(nom1)
+                                        medicamentsConcernes.add(nom2)
+                                    }
+                                }
+                            }
+                            val medicamentsConcernesUniques = medicamentsConcernes.distinct()
+                            val principesActifsRedondantsUniques = principesActifsRedondants.distinct()
+                            if (medicamentsConcernesUniques.isNotEmpty()) {
+                                alertMessage.value = "Attention, les médicaments suivants ont des principes actifs en commun : " +
+                                        medicamentsConcernesUniques.joinToString(", ") +
+                                        ". Les principes actifs en commun sont : " +
+                                        principesActifsRedondantsUniques.joinToString(", ") +
+                                        "." +
+                                        "Veuillez consulter un professionnel de santé pour plus d'informations."
+                                alert.value = true
+                            }
+                        }.start()
+                    },
+                    onAlert = {
+                        Thread {
+                            val treatments = state.treatments.map { treatment -> treatment.toEntity() }
                             treatments.forEach { treatment ->
                                 repository.add(treatment)
                             }
                         }.start()
-
                         if (state.treatments.any { it.notification }) {
                             navController.navigate(NotificationRoute.AddNotification.route) {
                                 popUpTo(PrescriptionRoute.AddPrescription.route) {
@@ -417,7 +531,10 @@ fun NavGraphBuilder.prescriptionNavGraph(
                     onImagePicker = {
                         imagePicker.launch("image/*")
                     },
-                    medications = medication
+                    medications = medication,
+                    alertText = alertMessage.value,
+                    alert = alert.value,
+                    hideAlert = {alert.value = false}
                 )
             }
         }
