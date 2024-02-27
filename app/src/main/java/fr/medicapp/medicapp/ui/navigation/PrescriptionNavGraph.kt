@@ -439,10 +439,11 @@ fun NavGraphBuilder.prescriptionNavGraph(
                     },
                     onConfirm = {
                         Thread {
+                            val treatsNotEntity = state.treatments
                             val treatments =
-                                state.treatments.map { treatment -> treatment.toEntity() }
+                                treatsNotEntity.map { treatment -> treatment.toEntity() }
                             // Récupération des informations sur les médicaments du patient
-                            val infos = state.treatments.mapNotNull { treatment ->
+                            val infos = treatsNotEntity.mapNotNull { treatment ->
                                 val cis = treatment.medication?.cisCode
                                 if (cis != null) {
                                     val info: InfosMedication? = try {
@@ -471,11 +472,13 @@ fun NavGraphBuilder.prescriptionNavGraph(
                                 for (j in i + 1 until infos.size) {
                                     val info1 = infos[i]
                                     val info2 = infos[j]
-                                    val intersection = info1.principes_actifs.intersect(info2.principes_actifs)
+                                    val intersection = info1.principes_actifs.intersect(info2.principes_actifs.toSet())
                                     if (intersection.isNotEmpty()) {
+                                        val nom1 = treatsNotEntity.find { it.medication?.cisCode == info1.cisCode }?.medication?.name?: ""
+                                        val nom2 = treatsNotEntity.find { it.medication?.cisCode == info2.cisCode }?.medication?.name?: ""
                                         principesActifsRedondants.addAll(intersection)
-                                        medicamentsConcernes.add(info1.cisCode)
-                                        medicamentsConcernes.add(info2.cisCode)
+                                        medicamentsConcernes.add(nom1)
+                                        medicamentsConcernes.add(nom2)
                                     }
                                 }
                             }
