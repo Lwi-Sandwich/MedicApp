@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.DocumentScanner
@@ -103,6 +105,7 @@ fun PrescriptionMainMenu(
                 .padding(innerPadding)
                 .fillMaxSize()
                 .padding(10.dp)
+                .verticalScroll(enabled=true, state=rememberScrollState())
         ) {
             if (ordonnances.isNotEmpty()){
                 for (i in ordonnances) {
