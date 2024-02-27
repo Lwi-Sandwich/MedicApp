@@ -36,7 +36,7 @@ class BasicTokenizerTest {
     @Test
     fun `test runSplitOnPunc NullPointerException`() {
         assertThrows<NullPointerException> {
-            BasicTokenizer.runSplitOnPunc(null)
+            BasicTokenizer.runSplitOnPunc("")
         }
     }
 
@@ -61,14 +61,14 @@ class BasicTokenizerTest {
     @Test
     fun `test whitespaceTokenize NullPointerException`() {
         assertThrows<NullPointerException> {
-            BasicTokenizer.whitespaceTokenize(null)
+            BasicTokenizer.whitespaceTokenize("")
         }
     }
 
     @Test
     fun `test cleanText NullPointerException`() {
         assertThrows<NullPointerException> {
-            BasicTokenizer.cleanText(null)
+            BasicTokenizer.cleanText("")
         }
     }
 }

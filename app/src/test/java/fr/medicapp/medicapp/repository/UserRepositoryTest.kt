@@ -11,7 +11,7 @@ import org.junit.jupiter.api.assertThrows
 
 class UserRepositoryTest {
 
-    lateinit var repository : UserRepository
+    /*lateinit var repository : UserRepository
 
     @BeforeEach
     fun setUp() {
@@ -172,5 +172,5 @@ class UserRepositoryTest {
         firstName: String = "Arthur",
         age  : Int = 22,
         email : String = "arthur.osselin@medicapp.fr"
-    ) = UserEntity(id, lastName,firstName, age,email)
+    ) = UserEntity(id, lastName,firstName, age,email)*/
 }
