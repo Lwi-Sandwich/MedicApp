@@ -82,6 +82,7 @@ fun EditPrescription(
     prescription: Prescription,
     medications: List<MedicationEntity>,
     alert: Boolean = false,
+    alertTitle: String = "",
     alertText: String = "",
     onAlert: () -> Unit = {},
     hideAlert: () -> Unit = {}
@@ -275,14 +276,14 @@ fun EditPrescription(
                     onClick = onAlert,
                     shape = RoundedCornerShape(20),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = EURed110,
+                        containerColor = EUGreen100,
                         contentColor = Color.White
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
                     Text(
-                        text = "Enregistrer quand même",
+                        text = "Enregistrer",
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -293,7 +294,7 @@ fun EditPrescription(
                     onClick = hideAlert,
                     shape = RoundedCornerShape(20),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = EUGreen100,
+                        containerColor = EURed110,
                         contentColor = Color.White
                     ),
                     modifier = Modifier
@@ -308,7 +309,7 @@ fun EditPrescription(
             },
             title = {
                 Text(
-                    text = "Redondance des principes actifs !",
+                    text = alertTitle,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
