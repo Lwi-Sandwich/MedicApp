@@ -298,6 +298,32 @@ fun NavGraphBuilder.prescriptionNavGraph(
                 mutableStateOf("")
             }
 
+            val alertTitle = remember {
+                mutableStateOf("")
+            }
+
+            val onAlert = {
+                Thread {
+                    val treatments = state.treatments.map { treatment -> treatment.toEntity() }
+                    treatments.forEach { treatment ->
+                        repository.add(treatment)
+                    }
+                }.start()
+                if (state.treatments.any { it.notification }) {
+                    navController.navigate(NotificationRoute.AddNotification.route) {
+                        popUpTo(PrescriptionRoute.AddPrescription.route) {
+                            inclusive = true
+                        }
+                    }
+                } else {
+                    navController.navigate(PrescriptionRoute.Main.route) {
+                        popUpTo(PrescriptionRoute.AddPrescription.route) {
+                            inclusive = true
+                        }
+                    }
+                }
+            }
+
             val imagePicker = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.GetContent(),
                 onResult = { uri: Uri? ->
@@ -495,31 +521,16 @@ fun NavGraphBuilder.prescriptionNavGraph(
                                         principesActifsRedondantsUniques.joinToString(", ") +
                                         "." +
                                         "Veuillez consulter un professionnel de santé pour plus d'informations."
-                                alert.value = true
+
+                                alertTitle.value = "Redondance des principes actifs !"
+                            } else {
+                                alertMessage.value = "Aucun problème n'a été détecté dans votre ordonnance. Vous pouvez la valider."
+                                alertTitle.value = "Valider votre traitement"
                             }
+                            alert.value = true
                         }.start()
                     },
-                    onAlert = {
-                        Thread {
-                            val treatments = state.treatments.map { treatment -> treatment.toEntity() }
-                            treatments.forEach { treatment ->
-                                repository.add(treatment)
-                            }
-                        }.start()
-                        if (state.treatments.any { it.notification }) {
-                            navController.navigate(NotificationRoute.AddNotification.route) {
-                                popUpTo(PrescriptionRoute.AddPrescription.route) {
-                                    inclusive = true
-                                }
-                            }
-                        } else {
-                            navController.navigate(PrescriptionRoute.Main.route) {
-                                popUpTo(PrescriptionRoute.AddPrescription.route) {
-                                    inclusive = true
-                                }
-                            }
-                        }
-                    },
+                    onAlert = onAlert,
                     onCameraPicker = {
                         imageUri = context.createImageFile()
                         cameraLauncher.launch(imageUri)
@@ -534,6 +545,7 @@ fun NavGraphBuilder.prescriptionNavGraph(
                     medications = medication,
                     alertText = alertMessage.value,
                     alert = alert.value,
+                    alertTitle = alertTitle.value,
                     hideAlert = {alert.value = false}
                 )
             }
