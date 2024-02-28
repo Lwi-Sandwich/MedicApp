@@ -107,7 +107,7 @@ fun PrescriptionMainMenu(
                 .fillMaxSize()
                 .padding(10.dp)
                 .verticalScroll(enabled=true, state=rememberScrollState()),
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = if (ordonnances.isEmpty()) Arrangement.Center else Arrangement.Top
         ) {
             if (ordonnances.isNotEmpty()){
                 for (i in ordonnances) {
