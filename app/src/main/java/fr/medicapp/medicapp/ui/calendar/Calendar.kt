@@ -40,8 +40,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -190,17 +192,33 @@ fun Calendar(
             ) {
                 var dailyTreatment = treatmentOfTheDay(treatments, notifications, selection)
                 val sortedDailyTreatment = sortedTreatment(dailyTreatment)
-                for (treatment in sortedDailyTreatment) {
-                    val heureFormatee = String.format("%02d:%02d", treatment.second, treatment.third)
-                    MedicationCalendarCard(
-                        heureFormatee,
-                        treatment.first,
-                        painScale = true,
-                        active = true
-                    )
+                if (dailyTreatment.isNotEmpty()) {
+                    for (treatment in sortedDailyTreatment) {
+                        val heureFormatee = String.format("%02d:%02d", treatment.second, treatment.third)
+                        MedicationCalendarCard(
+                            heureFormatee,
+                            treatment.first,
+                            painScale = true,
+                            active = true
+                        )
 
-                    Spacer(modifier = Modifier.height(15.dp))
+                        Spacer(modifier = Modifier.height(15.dp))
+                    }
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            "Aucun traitement pour cette journée",
+                            fontStyle = FontStyle.Italic,
+                            fontSize = 17.sp,
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
+
                 /*MedicationCalendarCard(
                     "10h00",
                     "Médicament exemple",
