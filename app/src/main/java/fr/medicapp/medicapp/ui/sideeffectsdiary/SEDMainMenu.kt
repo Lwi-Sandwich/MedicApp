@@ -102,7 +102,7 @@ fun SEDMainMenu(
                     enabled = true,
                     state = rememberScrollState()
                 ),
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = if (sideeffects.isEmpty()) Arrangement.Center else Arrangement.Top
         ) {
             if (sideeffects.isNotEmpty()){
                 for (i in sideeffects) {

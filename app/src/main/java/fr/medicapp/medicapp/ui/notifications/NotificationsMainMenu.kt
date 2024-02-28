@@ -108,7 +108,7 @@ fun NotificationsMainMenu(
                     enabled = true,
                     state = rememberScrollState()
                 ),
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = if (notifications.isEmpty()) Arrangement.Center else Arrangement.Top
         ) {
             if (notifications.isNotEmpty()){
                 for (i in notifications) {
