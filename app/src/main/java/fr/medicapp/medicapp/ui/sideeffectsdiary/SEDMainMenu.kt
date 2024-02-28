@@ -3,6 +3,7 @@ package fr.medicapp.medicapp.ui.sideeffectsdiary
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +13,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CardDefaults
@@ -95,6 +98,11 @@ fun SEDMainMenu(
                 .padding(innerPadding)
                 .fillMaxSize()
                 .padding(10.dp)
+                .verticalScroll(
+                    enabled = true,
+                    state = rememberScrollState()
+                ),
+            verticalArrangement = Arrangement.Center
         ) {
             if (sideeffects.isNotEmpty()){
                 for (i in sideeffects) {
@@ -158,16 +166,8 @@ fun SEDMainMenu(
 @Preview(showBackground = true)
 @Composable
 private fun SEDMainMenuPreview() {
-    var se = mutableListOf(
-        SideEffect(
-        id = "",
-            null,
-        LocalDate.now(),
-        12,
-        30,
-        mutableListOf("Mal de tête", "Nausées"),
-        "J'ai eu mal à la tête hier"
-        )
+    var se = mutableListOf<SideEffect>(
+
     )
     SEDMainMenu(se, {}, {})
 }

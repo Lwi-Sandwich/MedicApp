@@ -3,6 +3,7 @@ package fr.medicapp.medicapp.ui.prescription
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -105,7 +106,8 @@ fun PrescriptionMainMenu(
                 .padding(innerPadding)
                 .fillMaxSize()
                 .padding(10.dp)
-                .verticalScroll(enabled=true, state=rememberScrollState())
+                .verticalScroll(enabled=true, state=rememberScrollState()),
+            verticalArrangement = Arrangement.Center
         ) {
             if (ordonnances.isNotEmpty()){
                 for (i in ordonnances) {
@@ -191,20 +193,7 @@ fun PrescriptionMainMenu(
 @Preview(showBackground = true)
 @Composable
 private fun PrescriptionMainMenuPreview() {
-    var ordonnances = mutableListOf(
-        Treatment(
-            id = "1",
-            medication = null,
-            posology = "1 comprimé par jour",
-            quantity = "1 boite",
-            renew = "1 fois",
-            duration = Duration(
-                0,
-                startDate = LocalDate.now(),
-                endDate = LocalDate.now()
-            ),
-            notification = false
-        ),
+    var ordonnances = mutableListOf<Treatment>(
     )
 
 

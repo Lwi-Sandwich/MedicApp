@@ -3,6 +3,7 @@ package fr.medicapp.medicapp.ui.notifications
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,7 +15,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Alarm
@@ -101,6 +104,11 @@ fun NotificationsMainMenu(
                 .padding(innerPadding)
                 .fillMaxSize()
                 .padding(10.dp)
+                .verticalScroll(
+                    enabled = true,
+                    state = rememberScrollState()
+                ),
+            verticalArrangement = Arrangement.Center
         ) {
             if (notifications.isNotEmpty()){
                 for (i in notifications) {
