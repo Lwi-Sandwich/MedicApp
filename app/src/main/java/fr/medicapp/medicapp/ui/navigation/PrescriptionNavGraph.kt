@@ -136,33 +136,39 @@ fun NavGraphBuilder.prescriptionNavGraph(
             }
 
             Thread {
-                result.clear()
-                val treatmentEntity = repository.getOne(id)
-                val treatment = treatmentEntity.toTreatment(repositoryMedication)
-                result.add(treatment)
-                val cis = treatment.medication?.cisCode
-                if (cis != null) {
-                    val infos: InfosMedication = try{
-                        InfosMedication.fromEntity(repositoryInfos.getOne(cis))
-                    } catch (e: Exception) {
-                        try {
-                            val infosFetch = apizza.getInfosByCis(cis)
-                            try{
-                                repositoryInfos.add(infosFetch.toEntity())
-                            } catch (_: Exception) { }
-                            infosFetch
+                try {
+                    result.clear()
+                    val treatmentEntity = repository.getOne(id)
+                    val treatment = treatmentEntity.toTreatment(repositoryMedication)
+                    result.add(treatment)
+                    val cis = treatment.medication?.cisCode
+                    if (cis != null) {
+                        val infos: InfosMedication = try {
+                            InfosMedication.fromEntity(repositoryInfos.getOne(cis))
                         } catch (e: Exception) {
-                            InfosMedication(
-                                cisCode = cis,
-                                indications_therapeutiques = "Indisponible",
-                                classifcation_atc = "Indisponible",
-                                principes_actifs = listOf("Indisponible"),
-                                details = "Indisponible"
-                            )
+                            try {
+                                val infosFetch = apizza.getInfosByCis(cis)
+                                try {
+                                    repositoryInfos.add(infosFetch.toEntity())
+                                } catch (_: Exception) {
+                                }
+                                infosFetch
+                            } catch (e: Exception) {
+                                InfosMedication(
+                                    cisCode = cis,
+                                    indications_therapeutiques = "Indisponible",
+                                    classifcation_atc = "Indisponible",
+                                    principes_actifs = listOf("Indisponible"),
+                                    details = "Indisponible"
+                                )
+                            }
                         }
+                        resultInfos[cis] = infos
                     }
-                    resultInfos[cis] = infos
+                } catch (e: Exception) {
+                    Log.e("NPE", "Error: $e")
                 }
+
             }.start()
 
             val prescription = remember {

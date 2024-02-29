@@ -125,7 +125,7 @@ fun MedicationCalendarCard(
                         fontStyle = if (activeCard) FontStyle.Normal else FontStyle.Italic
                     )
                     Text(
-                        sliderValueBefore.toInt().toString(),
+                        (sliderValueBefore + 0.1).toInt().toString(),
                         fontWeight = FontWeight.Bold,
                         color = if (activeCard) Color.White else EUGreen40,
                         fontSize = 16.sp,
@@ -167,7 +167,7 @@ fun MedicationCalendarCard(
                         fontStyle = if (activeCard) FontStyle.Normal else FontStyle.Italic
                     )
                     Text(
-                        sliderValueAfter.toInt().toString(),
+                        (sliderValueAfter + 0.1).toInt().toString(),
                         fontWeight = FontWeight.Bold,
                         color = if (activeCard) Color.White else EUGreen40,
                         fontSize = 16.sp,
